@@ -1,0 +1,18 @@
+.text{
+}
+.big{
+    margin-left: 20px;
+    font-size: 20px;
+    color: #fff;
+}
+.small{
+    margin-left: 20px;
+    color: #6d6d6d;
+}
+.booking-step-wrapper{
+    background: #a7a5a5;
+    min-height: 95px;
+    position: relative;
+    padding: 19px;
+    text-align: center;
+}
