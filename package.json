@@ -20,7 +20,10 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "^2.1.8",
     "web-vitals": "^0.2.4",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "formik": "^2.0.6",
+    "yup": "^0.27.0"
+
   },
   "scripts": {
     "start": "react-scripts start",

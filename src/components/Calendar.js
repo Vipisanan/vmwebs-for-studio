@@ -29,7 +29,8 @@ const Calendar = props => {
                             <div className="row">
                                 <p className="col-8" style={{
                                     fontWeight: (item[0].status === 'available') ? 'normal' : 'bold',
-                                    color: (item[0].status === 'available') ? 'black' : 'green'
+                                    color: (item[0].status === 'available') ? 'black' : 'green',
+                                    textDecorationLine:(item[0].status === 'booked') ? 'line-through' : 'none',
                                 }}
                                    onClick={() => {
                                        addSchedule(item[0].dateWithTime) && addSchedule(item[0].dateWithTime)
