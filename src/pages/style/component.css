@@ -59,15 +59,26 @@ img,
 }
 .swal-icon {
     /*background-color: rgb(255, 0, 0);*/
-    display: flex!important;
-    position: relative!important;
-    margin-left: -280px!important;
-    text-align: left!important;
+    /*display: flex!important;*/
+    /*position: relative!important;*/
+    /*margin-left: -280px!important;*/
+    /*text-align: left!important;*/
 }
 .swal-title {
     /*display: flex!important;*/
     /*position: relative!important;*/
-    margin-left: 12px!important;
-    min-width: 200px!important;
+    /*margin-left: 10px!important;*/
+    /*min-width: 100px!important;*/
     /*text-align: right!important;*/
 }
+.swal-content {
+    background-color: rgb(199, 17, 17) !important;
+    display: flex!important;
+    margin:0px!important;
+    text-align: right!important;
+}
+/*.swal-container {*/
+/*    background-color: rgb(136, 255, 0)!important;*/
+/*    display: flex!important;*/
+/*    text-align: right!important;*/
+/*}*/

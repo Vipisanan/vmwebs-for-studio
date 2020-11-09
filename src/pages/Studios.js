@@ -173,17 +173,19 @@ class Studios extends Component {
         console.log(groupByDate);
 
         Swal.fire({
-            customClass:{
-                icon:'swal-icon',
-                title:'swal-title',
-            },
+            // customClass:{
+            //     icon:'swal-icon',
+            //     title:'swal-title',
+            //     content:'swal-content',
+            // },
             toast: true,
             position: 'top',
             icon: 'success',
-            title: 'Added slot to cart..',
+            title: `Added ${moment(date).format('YYYY-MM-DD HH:mm:A')} slot to cart.`,
             showClass: {
                 popup: 'animate__animated animate__fadeInDown',
-                icon: 'npm install animate.css --save'
+                icon: '',
+
             },
             hideClass: {
                 popup: 'animate__animated animate__fadeOutUp',
@@ -191,14 +193,10 @@ class Studios extends Component {
             timer: 2000,
             timerProgressBar: true,
             showConfirmButton: false,
-            width: 600,
+            width: 'auto',
+            padding :'14px',
 
-        }).then((result) => {
-            /* Read more about handling dismissals below */
-            if (result.dismiss === Swal.DismissReason.timer) {
-                console.log('I was closed by the timer')
-            }
-        })
+        });
         this.setState({timeSchedule: dateWithTime, bookedSchedule: groupByDate})
     }
 
