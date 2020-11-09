@@ -7,6 +7,8 @@ import {bookingSchedule, getSchedule, userRegister} from '../services/ScheduleSe
 import {chain, isEmpty} from 'lodash';
 import Cart from "../components/Cart";
 import UserForm from "../components/UserForm";
+import InstaGallery from "../components/InstaGallery";
+import {getInstaFeed} from "../services/InstaService";
 
 
 const initialSchedules = [
@@ -45,17 +47,19 @@ class Studios extends Component {
             timeSchedule: [],
             bookedSchedule: [],
             cartHeader: ['#', 'Date', 'Room', 'Time Slot', 'Price', 'Action'],
-            isOpenForm:false
+            isOpenForm:false,
+            instaFeed:[]
         }
     }
 
-    componentDidMount = () => {
+    componentDidMount = async () => {
         try {
             const dt = getSchedule();
         } catch (err) {
         }
-
+        const instaFeed = await getInstaFeed();
         this.weekFormat(moment().format('YYYY-MM-DD'));
+        this.setState({instaFeed});
     }
 
     weekFormat = date => {
@@ -179,7 +183,7 @@ class Studios extends Component {
             case 4:
                 return 10;
             default :
-                return 2;
+                return 13;
         }
     }
 
@@ -249,7 +253,7 @@ class Studios extends Component {
 
     }
     render() {
-        const {header, timeSchedule, bookedSchedule, cartHeader ,isOpenForm} = this.state
+        const {header, timeSchedule, bookedSchedule, cartHeader ,isOpenForm ,instaFeed} = this.state
         return (
             <div className="container">
                 <div className="booking-steps-wrapper">
@@ -303,6 +307,9 @@ class Studios extends Component {
 
                 {isOpenForm && (
                     <UserForm getFormValue={(data)=>this.submitForm(data)}></UserForm>
+                )}
+                {!isEmpty(instaFeed) && (
+                    <InstaGallery instaFeed={instaFeed.data}></InstaGallery>
                 )}
             </div>
         );
