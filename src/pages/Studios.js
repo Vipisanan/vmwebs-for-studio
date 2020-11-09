@@ -9,6 +9,8 @@ import Cart from "../components/Cart";
 import UserForm from "../components/UserForm";
 import InstaGallery from "../components/InstaGallery";
 import {getInstaFeed} from "../services/InstaService";
+import Swal from 'sweetalert2';
+import '../../node_modules/animate.css';
 
 
 const initialSchedules = [
@@ -169,6 +171,34 @@ class Studios extends Component {
             price: value[0].price
         })).value();
         console.log(groupByDate);
+
+        Swal.fire({
+            customClass:{
+                icon:'swal-icon',
+                title:'swal-title',
+            },
+            toast: true,
+            position: 'top',
+            icon: 'success',
+            title: 'Added slot to cart..',
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown',
+                icon: 'npm install animate.css --save'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp',
+            },
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            width: 600,
+
+        }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log('I was closed by the timer')
+            }
+        })
         this.setState({timeSchedule: dateWithTime, bookedSchedule: groupByDate})
     }
 

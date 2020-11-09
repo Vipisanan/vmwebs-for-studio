@@ -57,3 +57,17 @@ img,
         column-count: 5;
     }
 }
+.swal-icon {
+    /*background-color: rgb(255, 0, 0);*/
+    display: flex!important;
+    position: relative!important;
+    margin-left: -280px!important;
+    text-align: left!important;
+}
+.swal-title {
+    /*display: flex!important;*/
+    /*position: relative!important;*/
+    margin-left: 12px!important;
+    min-width: 200px!important;
+    /*text-align: right!important;*/
+}
