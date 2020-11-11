@@ -4,7 +4,7 @@ import Calendar from "../components/Calendar";
 import moment from 'moment';
 import {bookingSchedule, getSchedule, userRegister} from '../services/ScheduleService';
 
-import {chain, isEmpty} from 'lodash';
+import {chain, isEmpty ,isEqual} from 'lodash';
 import Cart from "../components/Cart";
 import UserForm from "../components/UserForm";
 import InstaGallery from "../components/InstaGallery";
@@ -17,25 +17,25 @@ const initialSchedules = [
     {
         "id": "1",
         "std_user_id": "1",
-        "schedule": "2020-11-08 08:00:00",
+        "schedule": "2020-11-11 08:00:00",
         "created_at": "2020-10-26 06:37:20"
     },
     {
         "id": "1",
         "std_user_id": "1",
-        "schedule": "2020-11-11 08:00:00",
+        "schedule": "2020-11-11 09:00:00",
         "created_at": "2020-10-26 06:37:20"
     },
     {
         "id": "2",
         "std_user_id": "6",
-        "schedule": "2020-11-09 08:00:00",
+        "schedule": "2020-11-11 12:00:00",
         "created_at": "2020-11-06 14:42:02"
     },
     {
         "id": "3",
         "std_user_id": "6",
-        "schedule": "2020-11-08 09:00:00",
+        "schedule": "2020-11-12 13:00:00",
         "created_at": "2020-11-08 09:04:51"
     }
 ]
@@ -49,8 +49,8 @@ class Studios extends Component {
             timeSchedule: [],
             bookedSchedule: [],
             cartHeader: ['#', 'Date', 'Room', 'Time Slot', 'Price', 'Action'],
-            isOpenForm:false,
-            instaFeed:[]
+            isOpenForm: false,
+            instaFeed: []
         }
     }
 
@@ -59,9 +59,9 @@ class Studios extends Component {
             const dt = getSchedule();
         } catch (err) {
         }
-        const instaFeed = await getInstaFeed();
+        // const instaFeed = await getInstaFeed();
         this.weekFormat(moment().format('YYYY-MM-DD'));
-        this.setState({instaFeed});
+        // this.setState({instaFeed});
     }
 
     weekFormat = date => {
@@ -84,58 +84,38 @@ class Studios extends Component {
                 status: 'available'
             }));
             dateWithTime.push(row);
-
         }
-        //checking which slot is booked
-        let merged = [];
-        let allInOne = [];
-        dateWithTime.forEach(item=>{
-            for (let i = 0; i <7; i++){
-                allInOne.push(item[i]);
-            }
-        })
-        console.log(allInOne);
-        let test=[];
-        initialSchedules.forEach(init=>{
-          merged = allInOne.map(item=>({
-            ...item,
-              date:moment(item.dateWithTime).format('YYYY-MM-DD'),
-              status: (init.schedule === item.dateWithTime) ? 'booked' : 'available'
-            }))
-            test.push(merged);
-        });
-        console.log(test);
-        //format again by 7
-        // let group = [];
-        // let r1 =merged.splice(0,7);
-        // let r2 =merged.splice(0,7);
-        // let r3 =merged.splice(0,7);
-        // let r4 =merged.splice(0,7);
-        // let r5 =merged.splice(0,7);
-        // let r6 =merged.splice(0,7);
-        // let r7 =merged.splice(0,7);
-        // let r8 =merged.splice(0,7);
-        // let r9 =merged.splice(0,7);
-        // let r10 =merged.splice(0,7);
-        // let r11 =merged.splice(0,7);
-        // let r12 =merged.splice(0,7);
-        // group.push(r1);
-        // group.push(r2);
-        // group.push(r3);
-        // group.push(r4);
-        // group.push(r5);
-        // group.push(r6);
-        // group.push(r7);
-        // group.push(r8);
-        // group.push(r9);
-        // group.push(r10);
-        // group.push(r11);
-        // group.push(r12);
 
-        // console.log(dateWithTime);
-        this.setState({timeSchedule: dateWithTime})
+
+        this.setState(state => {
+            return {timeSchedule: dateWithTime}
+        },()=>this.bookedSlotTimeMapping());
     }
 
+    bookedSlotTimeMapping = async () => {
+        let {timeSchedule} = this.state;
+        let newColSchedule =[];
+        console.log(timeSchedule);
+        initialSchedules.forEach(slot=>{
+            timeSchedule.forEach(schedule => {
+                const XY= schedule.map((item ,i) => ({
+                    ...item,
+                    date: moment(item.dateWithTime).format('YYYY-MM-DD'),
+                    status: (isEqual(slot.schedule , item.dateWithTime) && item.status !== 'booked') ? 'booked' : item.status
+                }));
+                // console.log(XY);
+                newColSchedule.push(XY);
+            });
+            timeSchedule = newColSchedule;
+            newColSchedule=[];
+        });
+
+        // console.log(newColSchedule);
+        console.log(timeSchedule);
+        await this.setState(state=>{return {timeSchedule:timeSchedule}},()=>{
+            // console.log(this.state.timeSchedule);
+        });
+    }
     addSchedule = date => {
         const {timeSchedule, bookedSchedule} = this.state;
         let dateWithTime = [];
@@ -194,7 +174,7 @@ class Studios extends Component {
             timerProgressBar: true,
             showConfirmButton: false,
             width: 'auto',
-            padding :'14px',
+            padding: '14px',
 
         });
         this.setState({timeSchedule: dateWithTime, bookedSchedule: groupByDate})
@@ -253,15 +233,15 @@ class Studios extends Component {
         this.setState({timeSchedule: dateWithTime, bookedSchedule: groupByDate})
     }
 
-    goToFinalStep=()=>{
-        this.setState({isOpenForm:true})
+    goToFinalStep = () => {
+        this.setState({isOpenForm: true})
     }
 
-    submitForm = async data=>{
+    submitForm = async data => {
         const {bookedSchedule} = this.state;
-        let schedule=[];
-        bookedSchedule.forEach((scheduleData , i) =>{
-            scheduleData.data.forEach(item =>{
+        let schedule = [];
+        bookedSchedule.forEach((scheduleData, i) => {
+            scheduleData.data.forEach(item => {
                 schedule.push(item.dateWithTime);
             });
         })
@@ -270,18 +250,19 @@ class Studios extends Component {
             let promises = [];
             if ((data.name && !isEmpty(schedule))) {
                 const createPromises = schedule.map(async entry => {
-                    return await bookingSchedule({schedule:entry , name:data.name});
+                    return await bookingSchedule({schedule: entry, name: data.name});
                 });
                 promises = [...promises, ...createPromises];
             }
             await Promise.all(promises);
-        }catch (e) {
+        } catch (e) {
 
         }
 
     }
+
     render() {
-        const {header, timeSchedule, bookedSchedule, cartHeader ,isOpenForm ,instaFeed} = this.state
+        const {header, timeSchedule, bookedSchedule, cartHeader, isOpenForm, instaFeed} = this.state
         return (
             <div className="container">
                 <div className="booking-steps-wrapper">
@@ -321,7 +302,7 @@ class Studios extends Component {
                     <Cart
                         header={cartHeader}
                         data={bookedSchedule}
-                        goToFinalStep={()=>this.goToFinalStep()}
+                        goToFinalStep={() => this.goToFinalStep()}
                         removeTimeSlot={(date) => this.removeBookingSchedule(date)}
                     >
                     </Cart>
@@ -334,7 +315,7 @@ class Studios extends Component {
                 )}
 
                 {isOpenForm && (
-                    <UserForm getFormValue={(data)=>this.submitForm(data)}></UserForm>
+                    <UserForm getFormValue={(data) => this.submitForm(data)}></UserForm>
                 )}
                 {!isEmpty(instaFeed) && (
                     <InstaGallery instaFeed={instaFeed.data}></InstaGallery>
@@ -343,6 +324,7 @@ class Studios extends Component {
         );
     }
 }
+
 //{
 //
 //     "email": "vipi@gFromPostman",
