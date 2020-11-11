@@ -29,7 +29,8 @@ const CalendarSlot = props => {
             <div className="row" style={{float: 'right', margin: '4px'}}>
                 <button type="button" style={{margin: '4px'}} className="btn btn-success">Add Makeup station</button>
                 <button type="button" style={{margin: '4px'}} className="btn btn-success">Go to Cart</button>
-                <button type="button" style={{margin: '4px'}} onClick={goToPreviousWeek}  className="btn btn-secondary">Previous</button>
+                <button type="button" style={{margin: '4px',
+                                        display: (moment(currentDate).isSameOrBefore(moment().format('YYYY-MM-DD'), 'day'))?'none':''}} onClick={goToPreviousWeek}  className="btn btn-secondary">Previous</button>
                 {/*<button type="button" style={{margin: '4px'}} className="btn btn-secondary">*/}
 
                     <DatePicker

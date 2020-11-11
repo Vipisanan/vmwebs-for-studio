@@ -82,6 +82,8 @@ class Studios extends Component {
     }
     changeDate=date=>{
         this.setState({date:date});
+        this.weekFormat(moment(date).format('YYYY-MM-DD'));
+
     }
     dataWithTime = () => {
         const {header} = this.state;
