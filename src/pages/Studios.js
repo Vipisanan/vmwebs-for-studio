@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import './style/component.css'
-import Calendar from "../components/Calendar";
+import CalendarSlot from "../components/CalendarSlot";
 import moment from 'moment';
 import {bookingSchedule, getSchedule, userRegister} from '../services/ScheduleService';
-
 import {chain, isEmpty ,isEqual} from 'lodash';
 import Cart from "../components/Cart";
 import UserForm from "../components/UserForm";
@@ -55,17 +54,19 @@ class Studios extends Component {
             bookedSchedule: [],
             cartHeader: ['#', 'Date', 'Room', 'Time Slot', 'Price', 'Action'],
             isOpenForm: false,
-            instaFeed: []
+            instaFeed: [],
+            date:moment(),
         }
     }
 
     componentDidMount = async () => {
+        const {date} = this.state;
         try {
-            const dt = getSchedule();
+            // const dt = getSchedule();
         } catch (err) {
         }
         // const instaFeed = await getInstaFeed();
-        this.weekFormat(moment().format('YYYY-MM-DD'));
+        this.weekFormat(moment(date).format('YYYY-MM-DD'));
         // this.setState({instaFeed});
     }
 
@@ -79,7 +80,9 @@ class Studios extends Component {
             return {header: weekData}
         }, () => this.dataWithTime())
     }
-
+    changeDate=date=>{
+        this.setState({date:date});
+    }
     dataWithTime = () => {
         const {header} = this.state;
         let dateWithTime = [];
@@ -158,18 +161,13 @@ class Studios extends Component {
         console.log(groupByDate);
 
         Swal.fire({
-            // customClass:{
-            //     icon:'swal-icon',
-            //     title:'swal-title',
-            //     content:'swal-content',
-            // },
             toast: true,
             position: 'top',
             icon: 'success',
             title: `Added ${moment(date).format('YYYY-MM-DD HH:mm:A')} slot to cart.`,
             showClass: {
                 popup: 'animate__animated animate__fadeInDown',
-                icon: '',
+                // icon: '',
 
             },
             hideClass: {
@@ -267,7 +265,7 @@ class Studios extends Component {
     }
 
     render() {
-        const {header, timeSchedule, bookedSchedule, cartHeader, isOpenForm, instaFeed} = this.state
+        const {header, timeSchedule, bookedSchedule, cartHeader, isOpenForm, instaFeed ,date} = this.state
         return (
             <div className="container">
                 <div className="booking-steps-wrapper">
@@ -313,10 +311,12 @@ class Studios extends Component {
                     </Cart>
                 )}
                 {!isOpenForm && (
-                    <Calendar header={header}
-                              timeSchedule={timeSchedule}
-                              removeBookingSchedule={(date) => this.removeBookingSchedule(date)}
-                              addSchedule={(date) => this.addSchedule(date)}></Calendar>
+                    <CalendarSlot header={header}
+                                  timeSchedule={timeSchedule}
+                                  changeDate={(date)=>this.changeDate(date)}
+                                  currentDate={moment(date).format('YYYY-MM-DD')}
+                                  removeBookingSchedule={(date) => this.removeBookingSchedule(date)}
+                                  addSchedule={(date) => this.addSchedule(date)}></CalendarSlot>
                 )}
 
                 {isOpenForm && (
