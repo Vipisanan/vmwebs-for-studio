@@ -41,3 +41,7 @@
     /*                     display: 'flex',*/
     /*                 },*/
 }
+.slot:hover {
+    color: #5C9541 !important;
+    font-weight : bold!important;
+}

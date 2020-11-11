@@ -27,11 +27,11 @@ const Calendar = props => {
                     return (<tr key={index}>
                         <td style={{minHeight: '10px!important', overflow:'hidden'}}>
                             <div className="row">
-                                <p className="col-8" style={{
+                                <p className="col-8 slot" style={{
                                     fontWeight: (item[0].status === 'available') ? 'normal' : 'bold',
                                     color: (item[0].status === 'available') ? 'black' : 'green',
+                                    cursor:(item[0].status !== 'booked') ? 'pointer':'',
                                     textDecorationLine:(item[0].status === 'booked') ? 'line-through' : 'none',
-                                    cursor:'pointer'
                                 }}
                                    onClick={() => {
                                        addSchedule(item[0].dateWithTime) && addSchedule(item[0].dateWithTime)
@@ -47,10 +47,11 @@ const Calendar = props => {
                         </td>
                         <td>
                             <div className="row">
-                                <p className="col-8" style={{
+                                <p className="col-8 slot" style={{
                                     fontWeight: (item[1].status === 'available') ? 'normal' : 'bold',
                                     color: (item[1].status === 'available') ? 'black' : 'green',
-                                    cursor:'pointer'
+                                    cursor:(item[1].status !== 'booked') ? 'pointer':'',
+                                    textDecorationLine:(item[1].status === 'booked') ? 'line-through' : 'none',
                                 }}
                                    onClick={() => {
                                        addSchedule(item[1].dateWithTime) && addSchedule(item[1].dateWithTime)
@@ -67,10 +68,11 @@ const Calendar = props => {
 
                         <td>
                             <div className="row">
-                                <p className="col-8" style={{
+                                <p className="col-8 slot" style={{
                                     fontWeight: (item[2].status === 'available') ? 'normal' : 'bold',
                                     color: (item[2].status === 'available') ? 'black' : 'green',
-                                    cursor:'pointer'
+                                    cursor:(item[2].status !== 'booked') ? 'pointer':'',
+                                    textDecorationLine:(item[2].status === 'booked') ? 'line-through' : 'none',
                                 }}
                                    onClick={() => {
                                        addSchedule(item[2].dateWithTime) && addSchedule(item[2].dateWithTime)
@@ -87,10 +89,11 @@ const Calendar = props => {
 
                         <td>
                             <div className="row">
-                                <p className="col-8" style={{
+                                <p className="col-8 slot" style={{
                                     fontWeight: (item[3].status === 'available') ? 'normal' : 'bold',
                                     color: (item[3].status === 'available') ? 'black' : 'green',
-                                    cursor:'pointer'
+                                    cursor:(item[3].status !== 'booked') ? 'pointer':'',
+                                    textDecorationLine:(item[3].status === 'booked') ? 'line-through' : 'none',
                                 }}
                                    onClick={() => {
                                        addSchedule(item[3].dateWithTime) && addSchedule(item[2].dateWithTime)
@@ -107,13 +110,13 @@ const Calendar = props => {
 
                         <td>
                             <div className="row">
-                                <p className="col-8" style={{
+                                <p className="col-8 slot" style={{
                                     fontWeight: (item[4].status === 'available') ? 'normal' : 'bold',
                                     color: (item[4].status === 'available') ? 'black' : 'green',
-                                    cursor:'pointer'
-                                }}
+                                    cursor:(item[4].status !== 'booked') ? 'pointer':'',
+                                    textDecorationLine:(item[4].status === 'booked') ? 'line-through' : 'none',                                }}
                                    onClick={() => {
-                                       addSchedule(item[4].dateWithTime) && addSchedule(item[2].dateWithTime)
+                                       addSchedule(item[4].dateWithTime) && addSchedule(item[4].dateWithTime)
                                    }}
                                 >
                                     {moment(item[4].dateWithTime).format('HH:mm:A')}
@@ -127,13 +130,14 @@ const Calendar = props => {
 
                         <td>
                             <div className="row">
-                                <p className="col-8" style={{
+                                <p className="col-8 slot" style={{
                                     fontWeight: (item[5].status === 'available') ? 'normal' : 'bold',
                                     color: (item[5].status === 'available') ? 'black' : 'green',
-                                    cursor:'pointer'
+                                    cursor:(item[5].status !== 'booked') ? 'pointer':'',
+                                    textDecorationLine:(item[5].status === 'booked') ? 'line-through' : 'none',
                                 }}
                                    onClick={() => {
-                                       addSchedule(item[5].dateWithTime) && addSchedule(item[2].dateWithTime)
+                                       addSchedule(item[5].dateWithTime) && addSchedule(item[5].dateWithTime)
                                    }}
                                 >
                                     {moment(item[5].dateWithTime).format('HH:mm:A')}
@@ -147,20 +151,21 @@ const Calendar = props => {
 
                         <td>
                             <div className="row">
-                                <p className="col-8" style={{
+                                <p className="col-8 slot" style={{
                                     fontWeight: (item[6].status === 'available') ? 'normal' : 'bold',
                                     color: (item[6].status === 'available') ? 'black' : 'green',
-                                    cursor:'pointer'
+                                    cursor:(item[6].status !== 'booked') ? 'pointer':'',
+                                    textDecorationLine:(item[6].status === 'booked') ? 'line-through' : 'none',
                                 }}
                                    onClick={() => {
-                                       addSchedule(item[6].dateWithTime) && addSchedule(item[2].dateWithTime)
+                                       addSchedule(item[6].dateWithTime) && addSchedule(item[6].dateWithTime)
                                    }}
                                 >
                                     {moment(item[6].dateWithTime).format('HH:mm:A')}
                                 </p>
                                 {(item[6].status === 'booking') && (
                                     <p className="col-4" style={{color: 'red', fontWeight: 'bold' ,cursor:'pointer'}}
-                                       onClick={() => removeBookingSchedule(item[6].dateWithTime) && removeBookingSchedule(item[2].dateWithTime)}>X</p>
+                                       onClick={() => removeBookingSchedule(item[6].dateWithTime) && removeBookingSchedule(item[6].dateWithTime)}>X</p>
                                 )}
                             </div>
                         </td>

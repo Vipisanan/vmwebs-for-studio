@@ -19,6 +19,11 @@ const initialSchedules = [
         "std_user_id": "1",
         "schedule": "2020-11-11 08:00:00",
         "created_at": "2020-10-26 06:37:20"
+    },{
+        "id": "1",
+        "std_user_id": "1",
+        "schedule": "2020-11-14 08:00:00",
+        "created_at": "2020-10-26 06:37:20"
     },
     {
         "id": "1",
