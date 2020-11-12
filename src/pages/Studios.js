@@ -9,6 +9,7 @@ import UserForm from "../components/UserForm";
 import InstaGallery from "../components/InstaGallery";
 import Swal from 'sweetalert2';
 import '../../node_modules/animate.css';
+import {getAllStudios} from "../services/RoomService";
 
 
 const initialSchedules = [
@@ -70,8 +71,14 @@ class Studios extends Component {
             date: moment(),
             studios: [],
             studio: {
-                id: 2,
-                name: 'Birch'
+                "id": "2",
+                "name": "Brich",
+                "status": "active",
+                "type": "studio",
+                "max_reservation": "1",
+                "tax": "12",
+                "price": "98",
+                "created_at": "2020-11-12 00:00:00"
             },
             busySlots: [],
         }
@@ -83,26 +90,11 @@ class Studios extends Component {
 
         } catch (err) {
         }
+        const roomsStudios = await getAllStudios();
         this.weekFormat(moment(date).format('YYYY-MM-DD'));
-        this.setStudios();
+        this.setState({studios:roomsStudios})
     }
 
-    setStudios = () => {
-        const st = [
-            {
-                id: 1,
-                name: 'Willow'
-            },
-            {
-                id: 2,
-                name: 'Birch'
-            },
-            {
-                id: 3,
-                name: 'Fern'
-            }];
-        this.setState({studios: st});
-    }
 
     weekFormat = date => {
         let weekData = [];

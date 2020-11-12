@@ -4,6 +4,8 @@ import Moment from "react-moment";
 import 'react-day-picker/lib/style.css';
 import DatePicker from "../core/CalendarCompo";
 import {isEmpty, isEqual} from "lodash";
+import rightArrow from "../assets/icons/angle-right-solid.svg";
+import leftArrow from "../assets/icons/angle-left-solid.svg"
 
 const CalendarSlot = props => {
     const {header, timeSchedule, addSchedule, removeBookingSchedule, currentDate ,studios,selectedStudio} = props;
@@ -43,20 +45,26 @@ const CalendarSlot = props => {
                         <button type="button" style={{margin: '4px'}} className="btn btn-success">Add Makeup station
                         </button>
                         <button type="button" style={{margin: '4px'}} className="btn btn-success">Go to Cart</button>
-                        <button type="button" style={{
+                        {/*<button type="button" style={{*/}
+                        {/*    margin: '4px',*/}
+                        {/*    display: (moment(currentDate).isSameOrBefore(moment().format('YYYY-MM-DD'), 'day')) ? 'none' : ''*/}
+                        {/*}} onClick={goToPreviousWeek} className="btn btn-secondary">*/}
+
+                        {/*</button>*/}
+                        <img   type="button" style={{ height:'32px' , width:'32px' ,marginTop:'7px',
                             margin: '4px',
+                            color:"green",
                             display: (moment(currentDate).isSameOrBefore(moment().format('YYYY-MM-DD'), 'day')) ? 'none' : ''
-                        }} onClick={goToPreviousWeek} className="btn btn-secondary">Previous
-                        </button>
-                        {/*<button type="button" style={{margin: '4px'}} className="btn btn-secondary">*/}
+                        }} onClick={goToPreviousWeek}  src={leftArrow} alt={leftArrow}/>
 
                         <DatePicker
                             date={currentDate}
                             onChangeDate={onChangeDate}/>
-                        {/*</button>*/}
-                        <button type="button" style={{margin: '4px'}} onClick={goToNextWeek}
-                                className="btn btn-secondary">Next
-                        </button>
+
+                        <img onClick={goToNextWeek} style={{height:'32px' , width:'32px' ,marginTop:'7px',
+                                        color:"green",
+                                        margin: '4px',}} src={rightArrow} alt={rightArrow}/>
+
                     </div>
 
                 </div>
