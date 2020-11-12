@@ -20,9 +20,9 @@ const Cart = props => {
     }
 
     return (
-        <div>
+        <div className="table-responsive-lg">
             <br/>
-            <table className="table table-striped">
+            <table className="table table-sm table-striped">
                 <thead>
                 <tr>
                     {header.map((item, index) => {
