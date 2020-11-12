@@ -66,7 +66,6 @@ const CalendarSlot = props => {
                                         margin: '4px',}} src={rightArrow} alt={rightArrow}/>
 
                     </div>
-
                 </div>
             </div>
 

@@ -24,8 +24,8 @@ class NavBar extends Component{
                             <Link to="/about">About</Link>
                         </Nav.Link>
                         <NavDropdown title="Studios" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#action/3.1">
-                                <Link to="/studios">Willow</Link>
+                            <NavDropdown.Item>
+                                <Link to="/studios" >Willow</Link>
                             </NavDropdown.Item>
                             {/*<NavDropdown.Item href="#action/3.2">Studio 2</NavDropdown.Item>*/}
                             {/*<NavDropdown.Item href="#action/3.3">Studio 3</NavDropdown.Item>*/}
