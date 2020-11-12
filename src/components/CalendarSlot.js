@@ -1,44 +1,67 @@
-import React, {useState} from 'react';
+import React from 'react';
 import moment from 'moment';
 import Moment from "react-moment";
 import 'react-day-picker/lib/style.css';
 import DatePicker from "../core/CalendarCompo";
-import {isEmpty} from "lodash";
+import {isEmpty, isEqual} from "lodash";
 
 const CalendarSlot = props => {
-    const {header, timeSchedule, addSchedule, removeBookingSchedule  ,currentDate} = props;
+    const {header, timeSchedule, addSchedule, removeBookingSchedule, currentDate ,studios,selectedStudio} = props;
 
-    const onChangeDate= (day)=>{
+    const onChangeDate = (day) => {
         props.changeDate(moment(day));
     }
-    const goToNextWeek =()=>{
+    const goToNextWeek = () => {
         console.log(moment(currentDate).format('YYYY-MM-DD'));
-        props.changeDate(moment(currentDate).add(7 ,'day'));
+        props.changeDate(moment(currentDate).add(7, 'day'));
     }
-    const goToPreviousWeek =()=>{
+    const goToPreviousWeek = () => {
         console.log(moment(currentDate).format('YYYY-MM-DD'));
-        props.changeDate(moment(currentDate).subtract(7 ,'day'));
+        props.changeDate(moment(currentDate).subtract(7, 'day'));
     }
 
     return (
         <div>
-            {!isEmpty(currentDate) && (
-                <div>{currentDate}</div>
-            )}
+            {/*{!isEmpty(currentDate) && (*/}
+            {/*    <div>{currentDate}</div>*/}
+            {/*)}*/}
             <br/>
-            <div className="row" style={{float: 'right', margin: '4px'}}>
-                <button type="button" style={{margin: '4px'}} className="btn btn-success">Add Makeup station</button>
-                <button type="button" style={{margin: '4px'}} className="btn btn-success">Go to Cart</button>
-                <button type="button" style={{margin: '4px',
-                                        display: (moment(currentDate).isSameOrBefore(moment().format('YYYY-MM-DD'), 'day'))?'none':''}} onClick={goToPreviousWeek}  className="btn btn-secondary">Previous</button>
-                {/*<button type="button" style={{margin: '4px'}} className="btn btn-secondary">*/}
+            <div className="row">
+                <div className="col col-sm-4 col-md-4 col-lg-4">
+                    {/*<div>*/}
+                        {/*<label htmlFor="inputState">State</label>*/}
+                        <select id="inputState" className="form-control" style={{width: '180px'}}>
+                            {studios.map(studio=>{
+                                return <option selected={isEqual(studio , selectedStudio)} value={studio}>{studio.name}</option>
+                            })}
+                        </select>
+                    {/*</div>*/}
 
-                    <DatePicker
-                        date={currentDate}
-                        onChangeDate = {onChangeDate}/>
-                {/*</button>*/}
-                <button type="button" style={{margin: '4px'}} onClick={goToNextWeek} className="btn btn-secondary">Next</button>
+                </div>
+                <div className="col col-sm-8 col-md-8 col-lg-8" >
+                    <div className="row" style={{float: 'right'}}>
+                        <button type="button" style={{margin: '4px'}} className="btn btn-success">Add Makeup station
+                        </button>
+                        <button type="button" style={{margin: '4px'}} className="btn btn-success">Go to Cart</button>
+                        <button type="button" style={{
+                            margin: '4px',
+                            display: (moment(currentDate).isSameOrBefore(moment().format('YYYY-MM-DD'), 'day')) ? 'none' : ''
+                        }} onClick={goToPreviousWeek} className="btn btn-secondary">Previous
+                        </button>
+                        {/*<button type="button" style={{margin: '4px'}} className="btn btn-secondary">*/}
+
+                        <DatePicker
+                            date={currentDate}
+                            onChangeDate={onChangeDate}/>
+                        {/*</button>*/}
+                        <button type="button" style={{margin: '4px'}} onClick={goToNextWeek}
+                                className="btn btn-secondary">Next
+                        </button>
+                    </div>
+
+                </div>
             </div>
+
             <br/>
             <table className="table">
                 <thead>

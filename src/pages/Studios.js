@@ -2,47 +2,59 @@ import React, {Component} from 'react';
 import './style/component.css'
 import CalendarSlot from "../components/CalendarSlot";
 import moment from 'moment';
-import {bookingSchedule, getSchedule, userRegister} from '../services/ScheduleService';
-import {chain, isEmpty ,isEqual} from 'lodash';
+import {bookingSchedule, getAllSchedule, userRegister} from '../services/ScheduleService';
+import {chain, isEmpty, isEqual} from 'lodash';
 import Cart from "../components/Cart";
 import UserForm from "../components/UserForm";
 import InstaGallery from "../components/InstaGallery";
-import {getInstaFeed} from "../services/InstaService";
 import Swal from 'sweetalert2';
 import '../../node_modules/animate.css';
 
 
 const initialSchedules = [
     {
-        "id": "1",
-        "std_user_id": "1",
-        "schedule": "2020-11-11 08:00:00",
-        "created_at": "2020-10-26 06:37:20"
-    },{
-        "id": "1",
-        "std_user_id": "1",
-        "schedule": "2020-11-14 08:00:00",
-        "created_at": "2020-10-26 06:37:20"
-    },
-    {
-        "id": "1",
-        "std_user_id": "1",
-        "schedule": "2020-11-11 09:00:00",
-        "created_at": "2020-10-26 06:37:20"
-    },
-    {
-        "id": "2",
-        "std_user_id": "6",
-        "schedule": "2020-11-11 12:00:00",
-        "created_at": "2020-11-06 14:42:02"
-    },
-    {
-        "id": "3",
-        "std_user_id": "6",
-        "schedule": "2020-11-12 13:00:00",
-        "created_at": "2020-11-08 09:04:51"
-    }
-]
+    "id": "2",
+    "studio_id": "1",
+    "booking_id": "1",
+    "type": "full",
+    "slot": "2020-11-19 11:00:00",
+    "created_at": "2020-11-12 00:00:00"
+}, {
+    "id": "3",
+    "studio_id": "1",
+    "booking_id": "1",
+    "type": "full",
+    "slot": "2020-11-19 12:00:00",
+    "created_at": "2020-11-12 00:00:00"
+}, {
+    "id": "4",
+    "studio_id": "1",
+    "booking_id": "1",
+    "type": "full",
+    "slot": "2020-11-19 13:00:00",
+    "created_at": "2020-11-12 00:00:00"
+}, {
+    "id": "5",
+    "studio_id": "1",
+    "booking_id": "1",
+    "type": "full",
+    "slot": "2020-11-19 01:00:00",
+    "created_at": "2020-11-12 00:00:00"
+}, {
+    "id": "6",
+    "studio_id": "1",
+    "booking_id": "1",
+    "type": "full",
+    "slot": "2020-11-19 14:00:00",
+    "created_at": "2020-11-12 00:00:00"
+}, {
+    "id": "7",
+    "studio_id": "1",
+    "booking_id": "1",
+    "type": "full",
+    "slot": "2020-11-19 18:00:00",
+    "created_at": "2020-11-12 00:00:00"
+}]
 
 class Studios extends Component {
 
@@ -55,19 +67,41 @@ class Studios extends Component {
             cartHeader: ['#', 'Date', 'Room', 'Time Slot', 'Price', 'Action'],
             isOpenForm: false,
             instaFeed: [],
-            date:moment(),
+            date: moment(),
+            studios: [],
+            studio: {
+                id: 2,
+                name: 'Birch'
+            },
+            busySlots: [],
         }
     }
 
     componentDidMount = async () => {
         const {date} = this.state;
         try {
-            // const dt = getSchedule();
+
         } catch (err) {
         }
-        // const instaFeed = await getInstaFeed();
         this.weekFormat(moment(date).format('YYYY-MM-DD'));
-        // this.setState({instaFeed});
+        this.setStudios();
+    }
+
+    setStudios = () => {
+        const st = [
+            {
+                id: 1,
+                name: 'Willow'
+            },
+            {
+                id: 2,
+                name: 'Birch'
+            },
+            {
+                id: 3,
+                name: 'Fern'
+            }];
+        this.setState({studios: st});
     }
 
     weekFormat = date => {
@@ -75,17 +109,18 @@ class Studios extends Component {
         for (let i = 0; i < 7; i++) {
             weekData.push(moment(date).add(i, 'day').format('YYYY-MM-DD'))
         }
-
         this.setState(state => {
             return {header: weekData}
         }, () => this.dataWithTime())
     }
-    changeDate=date=>{
-        this.setState({date:date});
+
+    changeDate = date => {
+        this.setState({date: date});
         this.weekFormat(moment(date).format('YYYY-MM-DD'));
 
     }
-    dataWithTime = () => {
+
+    dataWithTime = async () => {
         const {header} = this.state;
         let dateWithTime = [];
         for (let i = 0; i < 12; i++) {
@@ -95,34 +130,38 @@ class Studios extends Component {
             }));
             dateWithTime.push(row);
         }
-
-
+        const slots = await getAllSchedule();
         this.setState(state => {
-            return {timeSchedule: dateWithTime}
-        },()=>this.bookedSlotTimeMapping());
+            return {
+                timeSchedule: dateWithTime,
+                busySlots:slots
+            }
+        }, () => this.bookedSlotTimeMapping());
     }
 
+
     bookedSlotTimeMapping = async () => {
-        let {timeSchedule} = this.state;
-        let newColSchedule =[];
-        console.log(timeSchedule);
-        initialSchedules.forEach(slot=>{
+        let {timeSchedule, busySlots} = this.state;
+        let newColSchedule = [];
+        busySlots.forEach(slot => {
             timeSchedule.forEach(schedule => {
-                const XY= schedule.map((item ,i) => ({
+                const XY = schedule.map((item, i) => ({
                     ...item,
                     date: moment(item.dateWithTime).format('YYYY-MM-DD'),
-                    status: (isEqual(slot.schedule , item.dateWithTime) && item.status !== 'booked') ? 'booked' : item.status
+                    status: (isEqual(slot.slot, item.dateWithTime) && item.status !== 'booked') ? 'booked' : item.status
                 }));
                 // console.log(XY);
                 newColSchedule.push(XY);
             });
             timeSchedule = newColSchedule;
-            newColSchedule=[];
+            newColSchedule = [];
         });
 
         // console.log(newColSchedule);
         console.log(timeSchedule);
-        await this.setState(state=>{return {timeSchedule:timeSchedule}},()=>{
+        await this.setState(state => {
+            return {timeSchedule: timeSchedule}
+        }, () => {
             // console.log(this.state.timeSchedule);
         });
     }
@@ -267,7 +306,17 @@ class Studios extends Component {
     }
 
     render() {
-        const {header, timeSchedule, bookedSchedule, cartHeader, isOpenForm, instaFeed ,date} = this.state
+        const {
+            header,
+            timeSchedule,
+            bookedSchedule,
+            cartHeader,
+            isOpenForm,
+            instaFeed,
+            date,
+            studios,
+            studio
+        } = this.state
         return (
             <div className="container">
                 <div className="booking-steps-wrapper">
@@ -314,8 +363,10 @@ class Studios extends Component {
                 )}
                 {!isOpenForm && (
                     <CalendarSlot header={header}
+                                  studios={studios}
+                                  selectedStudio={studio}
                                   timeSchedule={timeSchedule}
-                                  changeDate={(date)=>this.changeDate(date)}
+                                  changeDate={(date) => this.changeDate(date)}
                                   currentDate={moment(date).format('YYYY-MM-DD')}
                                   removeBookingSchedule={(date) => this.removeBookingSchedule(date)}
                                   addSchedule={(date) => this.addSchedule(date)}></CalendarSlot>
