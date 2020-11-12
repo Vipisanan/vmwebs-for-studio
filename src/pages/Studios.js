@@ -77,7 +77,7 @@ class Studios extends Component {
                 "type": "studio",
                 "max_reservation": "1",
                 "tax": "12",
-                "price": "98",
+                "price": "99",
                 "created_at": "2020-11-12 00:00:00"
             },
             busySlots: [],
@@ -113,12 +113,16 @@ class Studios extends Component {
     }
 
     dataWithTime = async () => {
-        const {header} = this.state;
+        const {header ,studio} = this.state;
         let dateWithTime = [];
         for (let i = 0; i < 12; i++) {
             const row = header.map((item, index) => ({
                 dateWithTime: moment(item).add(i + 8, 'hour').format('YYYY-MM-DD HH:mm:ss'),
-                status: 'available'
+                status: 'available',
+                studio_name:studio.name,
+                studio_id:studio.id,
+                tax: studio.tax,
+                price: studio.price
             }));
             dateWithTime.push(row);
         }
@@ -157,23 +161,25 @@ class Studios extends Component {
             // console.log(this.state.timeSchedule);
         });
     }
+
     addSchedule = date => {
-        const {timeSchedule, bookedSchedule} = this.state;
+        const {timeSchedule, studio} = this.state;
         let dateWithTime = [];
-        let addSchedule = []
+        let addSchedule = [];
+        //reserved slot from calendar
         for (let i = 0; i < 12; i++) {
             const row = timeSchedule[i].map((item, index) => ({
+                ...item,
                 dateWithTime: item.dateWithTime,
-                status: (item.status === 'available') ? ((item.dateWithTime === date) ? 'booking' : item.status) : item.status
+                status: (item.status === 'available') ? ((item.dateWithTime === date.dateWithTime) ? 'booking' : item.status) : item.status
             }));
             dateWithTime.push(row);
         }
         dateWithTime.forEach(item => {
             const schedule = item.filter(item => item.status === 'booking').map((item, index) => ({
+                ...item,
                 date: moment(item.dateWithTime).format('YYYY-MM-DD'),
                 dateWithTime: item.dateWithTime,
-                room: 'Willium',
-                price: 95
             }));
             addSchedule.push(schedule)
         })
@@ -183,15 +189,13 @@ class Studios extends Component {
             item.forEach(sItem => {
                 allSelectedData.push(sItem);
             })
-        })
-
+        });
         const groupByDate = chain(allSelectedData).groupBy("date").map((value, key) => ({
             date: key,
             data: value,
             discount: this.addDiscount(value.length),
             price: value[0].price
         })).value();
-        console.log(groupByDate);
 
         Swal.fire({
             toast: true,
@@ -232,11 +236,12 @@ class Studios extends Component {
     }
 
     removeBookingSchedule = date => {
-        const {timeSchedule} = this.state;
+        const {timeSchedule , studio} = this.state;
         let dateWithTime = [];
         let addSchedule = []
         for (let i = 0; i < 12; i++) {
             const row = timeSchedule[i].map((item, index) => ({
+                ...item,
                 dateWithTime: item.dateWithTime,
                 status: (item.status === 'booking') ? ((item.dateWithTime === date) ? 'available' : item.status) : item.status
             }));
@@ -245,10 +250,9 @@ class Studios extends Component {
 
         dateWithTime.forEach(item => {
             const schedule = item.filter(item => item.status === 'booking').map((item, index) => ({
+                ...item,
                 date: moment(item.dateWithTime).format('YYYY-MM-DD'),
                 dateWithTime: item.dateWithTime,
-                room: 'Willium',
-                price: 95
             }));
             addSchedule.push(schedule)
         })
@@ -295,6 +299,12 @@ class Studios extends Component {
 
         }
 
+    }
+
+    onChangeStudio=$event=>{
+        const {studios ,date} =this.state;
+        const studio = studios.filter(studio => studio.id === $event.target.value);
+        this.setState(state=>{return{studio:studio[0]}},()=>this.weekFormat(moment(date).format('YYYY-MM-DD')));
     }
 
     render() {
@@ -358,6 +368,7 @@ class Studios extends Component {
                                   studios={studios}
                                   selectedStudio={studio}
                                   timeSchedule={timeSchedule}
+                                  onChangeStudio={(data)=>this.onChangeStudio(data)}
                                   changeDate={(date) => this.changeDate(date)}
                                   currentDate={moment(date).format('YYYY-MM-DD')}
                                   removeBookingSchedule={(date) => this.removeBookingSchedule(date)}

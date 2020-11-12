@@ -8,7 +8,7 @@ import rightArrow from "../assets/icons/angle-right-solid.svg";
 import leftArrow from "../assets/icons/angle-left-solid.svg"
 
 const CalendarSlot = props => {
-    const {header, timeSchedule, addSchedule, removeBookingSchedule, currentDate ,studios,selectedStudio} = props;
+    const {header, timeSchedule, addSchedule, removeBookingSchedule, currentDate ,studios,selectedStudio ,onChangeStudio} = props;
 
     const onChangeDate = (day) => {
         props.changeDate(moment(day));
@@ -32,9 +32,14 @@ const CalendarSlot = props => {
                 <div className="col col-sm-4 col-md-4 col-lg-4">
                     {/*<div>*/}
                         {/*<label htmlFor="inputState">State</label>*/}
-                        <select id="inputState" className="form-control" style={{width: '180px'}}>
+                        <select id="inputState"
+                                onChange={(event)=>onChangeStudio(event)}
+                                className="form-control" style={{width: '180px'}}>
                             {studios.map(studio=>{
-                                return <option selected={isEqual(studio , selectedStudio)} value={studio}>{studio.name}</option>
+                                return <option selected={isEqual(studio , selectedStudio)}
+                                               value={studio.id}
+                                >{studio.name}
+                                </option>
                             })}
                         </select>
                     {/*</div>*/}
@@ -98,7 +103,7 @@ const CalendarSlot = props => {
                                         textDecorationLine: (item[0].status === 'booked') ? 'line-through' : 'none',
                                     }}
                                        onClick={() => {
-                                           addSchedule(item[0].dateWithTime) && addSchedule(item[0].dateWithTime)
+                                           addSchedule(item[0]) && addSchedule(item[0])
                                        }}
                                     >
                                         {moment(item[0].dateWithTime).format('HH:mm:A')}
@@ -118,7 +123,7 @@ const CalendarSlot = props => {
                                         textDecorationLine: (item[1].status === 'booked') ? 'line-through' : 'none',
                                     }}
                                        onClick={() => {
-                                           addSchedule(item[1].dateWithTime) && addSchedule(item[1].dateWithTime)
+                                           addSchedule(item[1]) && addSchedule(item[1])
                                        }}
                                     >
                                         {moment(item[1].dateWithTime).format('HH:mm:A')}
@@ -139,7 +144,7 @@ const CalendarSlot = props => {
                                         textDecorationLine: (item[2].status === 'booked') ? 'line-through' : 'none',
                                     }}
                                        onClick={() => {
-                                           addSchedule(item[2].dateWithTime) && addSchedule(item[2].dateWithTime)
+                                           addSchedule(item[2]) && addSchedule(item[2])
                                        }}
                                     >
                                         {moment(item[2].dateWithTime).format('HH:mm:A')}
@@ -160,7 +165,7 @@ const CalendarSlot = props => {
                                         textDecorationLine: (item[3].status === 'booked') ? 'line-through' : 'none',
                                     }}
                                        onClick={() => {
-                                           addSchedule(item[3].dateWithTime) && addSchedule(item[2].dateWithTime)
+                                           addSchedule(item[3]) && addSchedule(item[3])
                                        }}
                                     >
                                         {moment(item[3].dateWithTime).format('HH:mm:A')}
@@ -181,7 +186,7 @@ const CalendarSlot = props => {
                                         textDecorationLine: (item[4].status === 'booked') ? 'line-through' : 'none',
                                     }}
                                        onClick={() => {
-                                           addSchedule(item[4].dateWithTime) && addSchedule(item[4].dateWithTime)
+                                           addSchedule(item[4]) && addSchedule(item[4])
                                        }}
                                     >
                                         {moment(item[4].dateWithTime).format('HH:mm:A')}
@@ -202,7 +207,7 @@ const CalendarSlot = props => {
                                         textDecorationLine: (item[5].status === 'booked') ? 'line-through' : 'none',
                                     }}
                                        onClick={() => {
-                                           addSchedule(item[5].dateWithTime) && addSchedule(item[5].dateWithTime)
+                                           addSchedule(item[5]) && addSchedule(item[5])
                                        }}
                                     >
                                         {moment(item[5].dateWithTime).format('HH:mm:A')}
@@ -223,7 +228,7 @@ const CalendarSlot = props => {
                                         textDecorationLine: (item[6].status === 'booked') ? 'line-through' : 'none',
                                     }}
                                        onClick={() => {
-                                           addSchedule(item[6].dateWithTime) && addSchedule(item[6].dateWithTime)
+                                           addSchedule(item[6]) && addSchedule(item[6])
                                        }}
                                     >
                                         {moment(item[6].dateWithTime).format('HH:mm:A')}
