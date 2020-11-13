@@ -92,14 +92,14 @@ const Cart = props => {
                                    <td>-</td>
                                </tr>
 
-                               <tr>
-                                   <td>Grand Total</td>
-                                   <td></td>
-                                   <td></td>
-                                   <td></td>
-                                   <td>##</td>
-                                   <td>-</td>
-                               </tr>
+                               {/*<tr>*/}
+                               {/*    <td>Grand Total</td>*/}
+                               {/*    <td></td>*/}
+                               {/*    <td></td>*/}
+                               {/*    <td></td>*/}
+                               {/*    <td>##</td>*/}
+                               {/*    <td>-</td>*/}
+                               {/*</tr>*/}
                                </tbody>
 
                                );
