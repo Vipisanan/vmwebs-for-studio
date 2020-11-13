@@ -93,6 +93,7 @@ const CalendarSlot = props => {
                     <tbody>
 
                     {timeSchedule.map((item, index) => {
+                        console.log(item);
                         return (<tr key={index}>
                             <td style={{minHeight: '10px!important', overflow: 'hidden'}}>
                                 <div className="row">
@@ -110,7 +111,8 @@ const CalendarSlot = props => {
                                     </p>
                                     {(item[0].status === 'booking') && (
                                         <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                           onClick={() => removeBookingSchedule(item[0].dateWithTime) && removeBookingSchedule(item[0].dateWithTime)}>X</p>
+                                           onClick={() => removeBookingSchedule(item[0].dateWithTime , item[0].studio_id)
+                                                            }>X</p>
                                     )}
                                 </div>
                             </td>
@@ -130,7 +132,7 @@ const CalendarSlot = props => {
                                     </p>
                                     {(item[1].status === 'booking') && (
                                         <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                           onClick={() => removeBookingSchedule(item[1].dateWithTime) && removeBookingSchedule(item[1].dateWithTime)}>X</p>
+                                           onClick={() => removeBookingSchedule(item[1].dateWithTime,item[1].studio_id) }>X</p>
                                     )}
                                 </div>
                             </td>
@@ -151,7 +153,7 @@ const CalendarSlot = props => {
                                     </p>
                                     {(item[2].status === 'booking') && (
                                         <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                           onClick={() => removeBookingSchedule(item[2].dateWithTime) && removeBookingSchedule(item[2].dateWithTime)}>X</p>
+                                           onClick={() => removeBookingSchedule(item[2].dateWithTime , item[2].studio_id)}>X</p>
                                     )}
                                 </div>
                             </td>
@@ -172,7 +174,7 @@ const CalendarSlot = props => {
                                     </p>
                                     {(item[3].status === 'booking') && (
                                         <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                           onClick={() => removeBookingSchedule(item[3].dateWithTime) && removeBookingSchedule(item[2].dateWithTime)}>X</p>
+                                           onClick={() => removeBookingSchedule(item[3].dateWithTime , item[3].studio_id) }>X</p>
                                     )}
                                 </div>
                             </td>
@@ -193,7 +195,7 @@ const CalendarSlot = props => {
                                     </p>
                                     {(item[4].status === 'booking') && (
                                         <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                           onClick={() => removeBookingSchedule(item[4].dateWithTime) && removeBookingSchedule(item[2].dateWithTime)}>X</p>
+                                           onClick={() => removeBookingSchedule(item[4].dateWithTime , item[4].studio_id)}>X</p>
                                     )}
                                 </div>
                             </td>
@@ -214,7 +216,7 @@ const CalendarSlot = props => {
                                     </p>
                                     {(item[5].status === 'booking') && (
                                         <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                           onClick={() => removeBookingSchedule(item[5].dateWithTime) && removeBookingSchedule(item[2].dateWithTime)}>X</p>
+                                           onClick={() => removeBookingSchedule(item[5].dateWithTime , item[5].studio_id)}>X</p>
                                     )}
                                 </div>
                             </td>
@@ -235,7 +237,7 @@ const CalendarSlot = props => {
                                     </p>
                                     {(item[6].status === 'booking') && (
                                         <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                           onClick={() => removeBookingSchedule(item[6].dateWithTime) && removeBookingSchedule(item[6].dateWithTime)}>X</p>
+                                           onClick={() => removeBookingSchedule(item[6].dateWithTime , item[6].studio_id)}>X</p>
                                     )}
                                 </div>
                             </td>

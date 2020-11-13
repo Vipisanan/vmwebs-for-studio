@@ -160,7 +160,6 @@ class Studios extends Component {
                                        item.status !== 'booking' &&
                                        isEqual(slot.studio_id , studio.id) ) ? 'booked' :item.status
                         }));
-                        // console.log(XY);
                         newColSchedule.push(XY);
                     });
                     timeSchedule = newColSchedule;
@@ -175,7 +174,6 @@ class Studios extends Component {
                         date: moment(item.dateWithTime).format('YYYY-MM-DD'),
                         status: (isEqual(slot.slot, item.dateWithTime) && item.status !== 'booked') ? 'booked' : item.status
                     }));
-                    // console.log(XY);
                     newColSchedule.push(XY);
                 });
                 timeSchedule = newColSchedule;
@@ -185,21 +183,18 @@ class Studios extends Component {
 
 
 
-        // console.log(newColSchedule);
-        console.log(timeSchedule);
         await this.setState(state => {
             return {timeSchedule: timeSchedule , isLoading:false}
-        }, () => {
-            // console.log(this.state.timeSchedule);
         });
     }
 
+
+
     addSchedule = date => {
         this.setState({isLoading:true})
-        const {timeSchedule, studio ,locallyAddedSlots} = this.state;
+        const {timeSchedule, studio ,studios ,locallyAddedSlots} = this.state;
         let dateWithTime = [];
         let localSlots = [];
-        let addSchedule = [];
         //add to local which slot booked.
         localSlots = locallyAddedSlots;
         localSlots.push({studio_id:studio.id, slot:date.dateWithTime});
@@ -213,28 +208,46 @@ class Studios extends Component {
             dateWithTime.push(row);
         }
 
-        dateWithTime.forEach(item => {
-            const schedule = item.filter(item => item.status === 'booking').map((item, index) => ({
-                ...item,
-                date: moment(item.dateWithTime).format('YYYY-MM-DD'),
-                dateWithTime: item.dateWithTime,
+        // dateWithTime.forEach(item => {
+        //     const schedule = item.filter(item => item.status === 'booking').map((item, index) => ({
+        //         ...item,
+        //         date: moment(item.dateWithTime).format('YYYY-MM-DD'),
+        //         dateWithTime: item.dateWithTime,
+        //     }));
+        //     addSchedule.push(schedule)
+        // })
+        // const addedDate = addSchedule.filter(item => !isEmpty(item));
+        // let allSelectedData = [];
+        // addedDate.forEach(item => {
+        //     item.forEach(sItem => {
+        //         allSelectedData.push(sItem);
+        //     })
+        // });
+        // const groupByDate = chain(allSelectedData).groupBy("date").map((value, key) => ({
+        //     date: key,
+        //     data: value,
+        //     discount: this.addDiscount(value.length),
+        //     price: value[0].price
+        // })).value();
+            const lData = localSlots.map((item, index)=>({
+                    ...item,
+                    date:moment(item.slot).format('YYYY-MM-DD'),
+                    studio: studios.filter(std=>std.id === item.studio_id),
             }));
-            addSchedule.push(schedule)
-        })
-        const addedDate = addSchedule.filter(item => !isEmpty(item));
-        let allSelectedData = [];
-        addedDate.forEach(item => {
-            item.forEach(sItem => {
-                allSelectedData.push(sItem);
-            })
-        });
-        console.log(addedDate);
-        const groupByDate = chain(allSelectedData).groupBy("date").map((value, key) => ({
-            date: key,
-            data: value,
-            discount: this.addDiscount(value.length),
-            price: value[0].price
+        //first group by studio
+        const groupByStudios = chain(lData).groupBy('studio_id').map((value, key)=>({
+            studio_id: key,
+            data: value
         })).value();
+        //second group by date
+        let groupByDate = [];
+        groupByStudios.forEach((stuGroup)=>{
+            const dateGroup = chain(stuGroup.data).groupBy('date').map((value, key)=>({
+                date: key,
+                data:value
+            })).value();
+            groupByDate.push(dateGroup);
+        })
 
         Swal.fire({
             toast: true,
@@ -256,6 +269,7 @@ class Studios extends Component {
             padding: '14px',
 
         });
+
         this.setState({timeSchedule: dateWithTime,
                             bookedSchedule: groupByDate,
                             locallyAddedSlots :localSlots,
@@ -277,14 +291,16 @@ class Studios extends Component {
         }
     }
 
-    removeBookingSchedule = date => {
+    removeBookingSchedule = (date , studio_id) => {
         this.setState({isLoading:true})
-        const {timeSchedule , locallyAddedSlots} = this.state;
+        const {timeSchedule , locallyAddedSlots , studios, studio} = this.state;
         let dateWithTime = [];
-        let addSchedule = []
         let localSlots = [];
-        //add to local which slot booked.
-        localSlots = locallyAddedSlots.filter(slot => slot.date !== date.dateWithTime);
+        //removed to local which slot booked.
+        console.log(locallyAddedSlots);
+        localSlots = locallyAddedSlots.filter(slot => !isEqual(slot , {studio_id:studio_id, slot:date}));
+        console.log(localSlots);
+
         for (let i = 0; i < 12; i++) {
             const row = timeSchedule[i].map((item, index) => ({
                 ...item,
@@ -294,28 +310,27 @@ class Studios extends Component {
             dateWithTime.push(row);
         }
 
-        dateWithTime.forEach(item => {
-            const schedule = item.filter(item => item.status === 'booking').map((item, index) => ({
-                ...item,
-                date: moment(item.dateWithTime).format('YYYY-MM-DD'),
-                dateWithTime: item.dateWithTime,
-            }));
-            addSchedule.push(schedule)
-        })
-        const addedDate = addSchedule.filter(item => !isEmpty(item));
-        let allSelectedData = [];
-        addedDate.forEach(item => {
-            item.forEach(sItem => {
-                allSelectedData.push(sItem);
-            })
-        })
+        //remove from local
 
-        const groupByDate = chain(allSelectedData).groupBy("date").map((value, key) => ({
-            date: key,
-            data: value,
-            discount: this.addDiscount(value.length)
+        const lData = localSlots.map((item)=>({
+            ...item,
+            date:moment(item.slot).format('YYYY-MM-DD'),
+            studio: studios.filter(std=>std.id === item.studio_id),
+        }));
+        //first group by studio
+        const groupByStudios = chain(lData).groupBy('studio_id').map((value, key)=>({
+            studio_id: key,
+            data: value
         })).value();
-        console.log(groupByDate);
+        //second group by date
+        let groupByDate = [];
+        groupByStudios.forEach((stuGroup)=>{
+            const dateGroup = chain(stuGroup.data).groupBy('date').map((value, key)=>({
+                date: key,
+                data:value
+            })).value();
+            groupByDate.push(dateGroup);
+        })
         this.setState({timeSchedule: dateWithTime,
                             bookedSchedule: groupByDate ,
                             locallyAddedSlots : localSlots,
@@ -415,7 +430,7 @@ class Studios extends Component {
                         header={cartHeader}
                         data={bookedSchedule}
                         goToFinalStep={() => this.goToFinalStep()}
-                        removeTimeSlot={(date) => this.removeBookingSchedule(date)}
+                        removeTimeSlot={(date , studio_id) => this.removeBookingSchedule(date , studio_id)}
                     >
                     </Cart>
                 )}
@@ -427,7 +442,7 @@ class Studios extends Component {
                                   onChangeStudio={(data)=>this.onChangeStudio(data)}
                                   changeDate={(date) => this.changeDate(date)}
                                   currentDate={moment(date).format('YYYY-MM-DD')}
-                                  removeBookingSchedule={(date) => this.removeBookingSchedule(date)}
+                                  removeBookingSchedule={(date ,studio_id) => this.removeBookingSchedule(date ,studio_id)}
                                   addSchedule={(date) => this.addSchedule(date)}></CalendarSlot>
                 )}
 
