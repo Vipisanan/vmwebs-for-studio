@@ -1,7 +1,7 @@
 import API from '../utils/api';
 
-export const getAllSchedule = async () => {
-    let schedule = await API.get('http://localhost/wordpress/index.php/wp-json/std/slots');
+export const getAllSchedule = async (id) => {
+    let schedule = await API.get(`http://localhost/wordpress/index.php/wp-json/std/slots/${id}`);
 
     return schedule.data;
 };

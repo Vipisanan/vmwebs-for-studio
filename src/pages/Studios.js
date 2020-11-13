@@ -10,6 +10,9 @@ import InstaGallery from "../components/InstaGallery";
 import Swal from 'sweetalert2';
 import '../../node_modules/animate.css';
 import {getAllStudios} from "../services/RoomService";
+import Loader from 'react-loader-spinner';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import CustomLoader from "../components/CustomLoader";
 
 
 const initialSchedules = [
@@ -81,20 +84,21 @@ class Studios extends Component {
                 "created_at": "2020-11-12 00:00:00"
             },
             busySlots: [],
+            isLoading: false
         }
     }
 
     componentDidMount = async () => {
-        const {date} = this.state;
+        const {date , studio} = this.state;
+        this.setState({isLoading:true})
         try {
 
         } catch (err) {
         }
-        const roomsStudios = await getAllStudios();
+        const roomsStudios = await getAllStudios(1);
         this.weekFormat(moment(date).format('YYYY-MM-DD'));
-        this.setState({studios:roomsStudios})
+        this.setState({studios:roomsStudios })
     }
-
 
     weekFormat = date => {
         let weekData = [];
@@ -107,9 +111,8 @@ class Studios extends Component {
     }
 
     changeDate = date => {
-        this.setState({date: date});
+        this.setState({date: date , isLoading:true});
         this.weekFormat(moment(date).format('YYYY-MM-DD'));
-
     }
 
     dataWithTime = async () => {
@@ -126,7 +129,7 @@ class Studios extends Component {
             }));
             dateWithTime.push(row);
         }
-        const slots = await getAllSchedule();
+        const slots = await getAllSchedule(studio.id);
         this.setState(state => {
             return {
                 timeSchedule: dateWithTime,
@@ -134,7 +137,6 @@ class Studios extends Component {
             }
         }, () => this.bookedSlotTimeMapping());
     }
-
 
     bookedSlotTimeMapping = async () => {
         let {timeSchedule, busySlots} = this.state;
@@ -156,13 +158,14 @@ class Studios extends Component {
         // console.log(newColSchedule);
         console.log(timeSchedule);
         await this.setState(state => {
-            return {timeSchedule: timeSchedule}
+            return {timeSchedule: timeSchedule , isLoading:false}
         }, () => {
             // console.log(this.state.timeSchedule);
         });
     }
 
     addSchedule = date => {
+        this.setState({isLoading:true})
         const {timeSchedule, studio} = this.state;
         let dateWithTime = [];
         let addSchedule = [];
@@ -190,6 +193,7 @@ class Studios extends Component {
                 allSelectedData.push(sItem);
             })
         });
+        console.log(addedDate);
         const groupByDate = chain(allSelectedData).groupBy("date").map((value, key) => ({
             date: key,
             data: value,
@@ -217,7 +221,7 @@ class Studios extends Component {
             padding: '14px',
 
         });
-        this.setState({timeSchedule: dateWithTime, bookedSchedule: groupByDate})
+        this.setState({timeSchedule: dateWithTime, bookedSchedule: groupByDate , isLoading:false})
     }
 
     addDiscount = (dis) => {
@@ -236,6 +240,7 @@ class Studios extends Component {
     }
 
     removeBookingSchedule = date => {
+        this.setState({isLoading:true})
         const {timeSchedule , studio} = this.state;
         let dateWithTime = [];
         let addSchedule = []
@@ -270,7 +275,7 @@ class Studios extends Component {
             discount: this.addDiscount(value.length)
         })).value();
         console.log(groupByDate);
-        this.setState({timeSchedule: dateWithTime, bookedSchedule: groupByDate})
+        this.setState({timeSchedule: dateWithTime, bookedSchedule: groupByDate , isLoading:false});
     }
 
     goToFinalStep = () => {
@@ -302,8 +307,10 @@ class Studios extends Component {
     }
 
     onChangeStudio=$event=>{
+        this.setState({isLoading:true})
         const {studios ,date} =this.state;
         const studio = studios.filter(studio => studio.id === $event.target.value);
+        //call schedule api too
         this.setState(state=>{return{studio:studio[0]}},()=>this.weekFormat(moment(date).format('YYYY-MM-DD')));
     }
 
@@ -317,10 +324,15 @@ class Studios extends Component {
             instaFeed,
             date,
             studios,
-            studio
+            studio,
+            isLoading
         } = this.state
         return (
             <div className="container">
+                {isLoading && (
+                    <CustomLoader isNoteOpen={true}/>
+                    )}
+
                 <div className="booking-steps-wrapper">
                     <div className="container">
                         <div className="row">
