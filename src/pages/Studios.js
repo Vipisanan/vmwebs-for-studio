@@ -10,55 +10,54 @@ import InstaGallery from "../components/InstaGallery";
 import Swal from 'sweetalert2';
 import '../../node_modules/animate.css';
 import {getAllStudios} from "../services/RoomService";
-import Loader from 'react-loader-spinner';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import CustomLoader from "../components/CustomLoader";
 
 
 const initialSchedules = [
     {
-    "id": "2",
-    "studio_id": "1",
-    "booking_id": "1",
-    "type": "full",
-    "slot": "2020-11-19 11:00:00",
-    "created_at": "2020-11-12 00:00:00"
-}, {
-    "id": "3",
-    "studio_id": "1",
-    "booking_id": "1",
-    "type": "full",
-    "slot": "2020-11-19 12:00:00",
-    "created_at": "2020-11-12 00:00:00"
-}, {
-    "id": "4",
-    "studio_id": "1",
-    "booking_id": "1",
-    "type": "full",
-    "slot": "2020-11-19 13:00:00",
-    "created_at": "2020-11-12 00:00:00"
-}, {
-    "id": "5",
-    "studio_id": "1",
-    "booking_id": "1",
-    "type": "full",
-    "slot": "2020-11-19 01:00:00",
-    "created_at": "2020-11-12 00:00:00"
-}, {
-    "id": "6",
-    "studio_id": "1",
-    "booking_id": "1",
-    "type": "full",
-    "slot": "2020-11-19 14:00:00",
-    "created_at": "2020-11-12 00:00:00"
-}, {
-    "id": "7",
-    "studio_id": "1",
-    "booking_id": "1",
-    "type": "full",
-    "slot": "2020-11-19 18:00:00",
-    "created_at": "2020-11-12 00:00:00"
-}]
+        "id": "2",
+        "studio_id": "1",
+        "booking_id": "1",
+        "type": "full",
+        "slot": "2020-11-19 11:00:00",
+        "created_at": "2020-11-12 00:00:00"
+    }, {
+        "id": "3",
+        "studio_id": "1",
+        "booking_id": "1",
+        "type": "full",
+        "slot": "2020-11-19 12:00:00",
+        "created_at": "2020-11-12 00:00:00"
+    }, {
+        "id": "4",
+        "studio_id": "1",
+        "booking_id": "1",
+        "type": "full",
+        "slot": "2020-11-19 13:00:00",
+        "created_at": "2020-11-12 00:00:00"
+    }, {
+        "id": "5",
+        "studio_id": "1",
+        "booking_id": "1",
+        "type": "full",
+        "slot": "2020-11-19 01:00:00",
+        "created_at": "2020-11-12 00:00:00"
+    }, {
+        "id": "6",
+        "studio_id": "1",
+        "booking_id": "1",
+        "type": "full",
+        "slot": "2020-11-19 14:00:00",
+        "created_at": "2020-11-12 00:00:00"
+    }, {
+        "id": "7",
+        "studio_id": "1",
+        "booking_id": "1",
+        "type": "full",
+        "slot": "2020-11-19 18:00:00",
+        "created_at": "2020-11-12 00:00:00"
+    }]
 
 class Studios extends Component {
 
@@ -85,16 +84,16 @@ class Studios extends Component {
             },
             busySlots: [],
             isLoading: false,
-            holiday:[],
-            openClose:[],
-            locallyAddedSlots:[],
-            allDiscounts:[]
+            holiday: [],
+            openClose: [],
+            locallyAddedSlots: [],
+            allDiscounts: []
         }
     }
 
     componentDidMount = async () => {
-        const {date , studio} = this.state;
-        this.setState({isLoading:true})
+        const {date, studio} = this.state;
+        this.setState({isLoading: true})
         try {
 
         } catch (err) {
@@ -102,13 +101,15 @@ class Studios extends Component {
         const roomsStudios = await getAllStudios(1);
         const allDiscounts = await getAllDiscounts();
         this.weekFormat(moment(date).format('YYYY-MM-DD'));
-        this.setState(state =>{return {studios:roomsStudios ,allDiscounts:allDiscounts }})
+        this.setState(state => {
+            return {studios: roomsStudios, allDiscounts: allDiscounts}
+        })
     }
 
-    renderDiscount =(length , studio_id)=>{
-        const {allDiscounts} =this.state;
-        const dis = allDiscounts.filter(item=> (item.studio_id === studio_id && item.no_of_slot === length.toString()));
-        console.log(length.toString() , studio_id ,dis)
+    renderDiscount = (length, studio_id) => {
+        const {allDiscounts} = this.state;
+        const dis = allDiscounts.filter(item => (item.studio_id === studio_id && item.no_of_slot === length.toString()));
+        console.log(length.toString(), studio_id, dis)
         if (isEmpty(dis[0])) return 1; else return dis[0].discount;
     }
 
@@ -123,51 +124,51 @@ class Studios extends Component {
     }
 
     changeDate = date => {
-        this.setState({date: date , isLoading:true});
+        this.setState({date: date, isLoading: true});
         this.weekFormat(moment(date).format('YYYY-MM-DD'));
     }
 
     dataWithTime = async () => {
-        const {header ,studio ,locallyAddedSlots} = this.state;
+        const {header, studio, locallyAddedSlots} = this.state;
         let dateWithTime = [];
         for (let i = 0; i < 12; i++) {
             const row = header.map((item, index) => ({
                 dateWithTime: moment(item).add(i + 8, 'hour').format('YYYY-MM-DD HH:mm:ss'),
                 status: 'available',
-                studio_name:studio.name,
-                studio_id:studio.id,
+                studio_name: studio.name,
+                studio_id: studio.id,
                 tax: studio.tax,
                 price: studio.price
             }));
             dateWithTime.push(row);
         }
         let slots = await getAllSchedule(studio.id);
-        locallyAddedSlots.forEach(localSlots=>{
+        locallyAddedSlots.forEach(localSlots => {
             slots.push(localSlots);
         })
         this.setState(state => {
             return {
                 timeSchedule: dateWithTime,
-                busySlots:slots
+                busySlots: slots
             }
         }, () => this.bookedSlotTimeMapping());
     }
 
     bookedSlotTimeMapping = async () => {
-        let {timeSchedule, busySlots ,locallyAddedSlots , studio} = this.state;
+        let {timeSchedule, busySlots, locallyAddedSlots, studio} = this.state;
         let newColSchedule = [];
-        if (locallyAddedSlots.length > 0){
-            locallyAddedSlots.forEach(localSlots=>{
+        if (locallyAddedSlots.length > 0) {
+            locallyAddedSlots.forEach(localSlots => {
                 busySlots.forEach(slot => {
                     timeSchedule.forEach(schedule => {
                         const XY = schedule.map((item, i) => ({
                             ...item,
                             date: moment(item.dateWithTime).format('YYYY-MM-DD'),
-                            status:(isEqual(item.studio_id , localSlots.studio_id) && isEqual(localSlots.slot, item.dateWithTime))? 'booking':
-                                   (isEqual(slot.slot, item.dateWithTime) &&
-                                       item.status !== 'booked' &&
-                                       item.status !== 'booking' &&
-                                       isEqual(slot.studio_id , studio.id) ) ? 'booked' :item.status
+                            status: (isEqual(item.studio_id, localSlots.studio_id) && isEqual(localSlots.slot, item.dateWithTime)) ? 'booking' :
+                                (isEqual(slot.slot, item.dateWithTime) &&
+                                    item.status !== 'booked' &&
+                                    item.status !== 'booking' &&
+                                    isEqual(slot.studio_id, studio.id)) ? 'booked' : item.status
                         }));
                         newColSchedule.push(XY);
                     });
@@ -175,7 +176,7 @@ class Studios extends Component {
                     newColSchedule = [];
                 });
             })
-        }else {
+        } else {
             busySlots.forEach(slot => {
                 timeSchedule.forEach(schedule => {
                     const XY = schedule.map((item, i) => ({
@@ -191,22 +192,20 @@ class Studios extends Component {
         }
 
 
-
         await this.setState(state => {
-            return {timeSchedule: timeSchedule , isLoading:false}
+            return {timeSchedule: timeSchedule, isLoading: false}
         });
     }
 
 
-
     addSchedule = date => {
-        this.setState({isLoading:true})
-        const {timeSchedule, studio ,studios ,locallyAddedSlots} = this.state;
+        this.setState({isLoading: true})
+        const {timeSchedule, studio, studios, locallyAddedSlots} = this.state;
         let dateWithTime = [];
         let localSlots = [];
         //add to local which slot booked.
         localSlots = locallyAddedSlots;
-        localSlots.push({studio_id:studio.id, slot:date.dateWithTime});
+        localSlots.push({studio_id: studio.id, slot: date.dateWithTime});
         //reserved slot from calendar
         for (let i = 0; i < 12; i++) {
             const row = timeSchedule[i].map((item, index) => ({
@@ -216,44 +215,22 @@ class Studios extends Component {
             }));
             dateWithTime.push(row);
         }
-
-        // dateWithTime.forEach(item => {
-        //     const schedule = item.filter(item => item.status === 'booking').map((item, index) => ({
-        //         ...item,
-        //         date: moment(item.dateWithTime).format('YYYY-MM-DD'),
-        //         dateWithTime: item.dateWithTime,
-        //     }));
-        //     addSchedule.push(schedule)
-        // })
-        // const addedDate = addSchedule.filter(item => !isEmpty(item));
-        // let allSelectedData = [];
-        // addedDate.forEach(item => {
-        //     item.forEach(sItem => {
-        //         allSelectedData.push(sItem);
-        //     })
-        // });
-        // const groupByDate = chain(allSelectedData).groupBy("date").map((value, key) => ({
-        //     date: key,
-        //     data: value,
-        //     discount: this.addDiscount(value.length),
-        //     price: value[0].price
-        // })).value();
-            const lData = localSlots.map((item, index)=>({
-                    ...item,
-                    date:moment(item.slot).format('YYYY-MM-DD'),
-                    studio: studios.filter(std=>std.id === item.studio_id),
-            }));
+        const lData = localSlots.map((item, index) => ({
+            ...item,
+            date: moment(item.slot).format('YYYY-MM-DD'),
+            studio: studios.filter(std => std.id === item.studio_id),
+        }));
         //first group by studio
-        const groupByStudios = chain(lData).groupBy('studio_id').map((value, key)=>({
+        const groupByStudios = chain(lData).groupBy('studio_id').map((value, key) => ({
             studio_id: key,
             data: value
         })).value();
         //second group by date
         let groupByDate = [];
-        groupByStudios.forEach((stuGroup)=>{
-            const dateGroup = chain(stuGroup.data).groupBy('date').map((value, key)=>({
+        groupByStudios.forEach((stuGroup) => {
+            const dateGroup = chain(stuGroup.data).groupBy('date').map((value, key) => ({
                 date: key,
-                data:value
+                data: value
             })).value();
             groupByDate.push(dateGroup);
         })
@@ -262,7 +239,7 @@ class Studios extends Component {
             toast: true,
             position: 'top',
             icon: 'success',
-            title: `Added ${moment(date).format('YYYY-MM-DD HH:mm:A')} slot to cart.`,
+            title: `Added ${moment(date.dateWithTime).format('YYYY-MM-DD HH:mm:A')} slot to cart.`,
             showClass: {
                 popup: 'animate__animated animate__fadeInDown',
                 // icon: '',
@@ -279,35 +256,23 @@ class Studios extends Component {
 
         });
 
-        this.setState({timeSchedule: dateWithTime,
-                            bookedSchedule: groupByDate,
-                            locallyAddedSlots :localSlots,
-                            isLoading:false})
+        this.setState({
+            timeSchedule: dateWithTime,
+            bookedSchedule: groupByDate,
+            locallyAddedSlots: localSlots,
+            isLoading: false
+        })
     }
 
-    addDiscount = (dis) => {
-        switch (dis) {
-            case 1:
-                return 4;
-            case 2:
-                return 5;
-            case 3:
-                return 8;
-            case 4:
-                return 10;
-            default :
-                return 13;
-        }
-    }
 
-    removeBookingSchedule = (date , studio_id) => {
-        this.setState({isLoading:true})
-        const {timeSchedule , locallyAddedSlots , studios, studio} = this.state;
+    removeBookingSchedule = (date, studio_id) => {
+        this.setState({isLoading: true})
+        const {timeSchedule, locallyAddedSlots, studios, studio} = this.state;
         let dateWithTime = [];
         let localSlots = [];
         //removed to local which slot booked.
         console.log(locallyAddedSlots);
-        localSlots = locallyAddedSlots.filter(slot => !isEqual(slot , {studio_id:studio_id, slot:date}));
+        localSlots = locallyAddedSlots.filter(slot => !isEqual(slot, {studio_id: studio_id, slot: date}));
         console.log(localSlots);
 
         for (let i = 0; i < 12; i++) {
@@ -321,29 +286,31 @@ class Studios extends Component {
 
         //remove from local
 
-        const lData = localSlots.map((item)=>({
+        const lData = localSlots.map((item) => ({
             ...item,
-            date:moment(item.slot).format('YYYY-MM-DD'),
-            studio: studios.filter(std=>std.id === item.studio_id),
+            date: moment(item.slot).format('YYYY-MM-DD'),
+            studio: studios.filter(std => std.id === item.studio_id),
         }));
         //first group by studio
-        const groupByStudios = chain(lData).groupBy('studio_id').map((value, key)=>({
+        const groupByStudios = chain(lData).groupBy('studio_id').map((value, key) => ({
             studio_id: key,
             data: value
         })).value();
         //second group by date
         let groupByDate = [];
-        groupByStudios.forEach((stuGroup)=>{
-            const dateGroup = chain(stuGroup.data).groupBy('date').map((value, key)=>({
+        groupByStudios.forEach((stuGroup) => {
+            const dateGroup = chain(stuGroup.data).groupBy('date').map((value, key) => ({
                 date: key,
-                data:value
+                data: value
             })).value();
             groupByDate.push(dateGroup);
         })
-        this.setState({timeSchedule: dateWithTime,
-                            bookedSchedule: groupByDate ,
-                            locallyAddedSlots : localSlots,
-                            isLoading:false});
+        this.setState({
+            timeSchedule: dateWithTime,
+            bookedSchedule: groupByDate,
+            locallyAddedSlots: localSlots,
+            isLoading: false
+        });
     }
 
     goToFinalStep = () => {
@@ -374,12 +341,14 @@ class Studios extends Component {
 
     }
 
-    onChangeStudio=$event=>{
-        this.setState({isLoading:true})
-        const {studios ,date} =this.state;
+    onChangeStudio = $event => {
+        this.setState({isLoading: true})
+        const {studios, date} = this.state;
         const studio = studios.filter(studio => studio.id === $event.target.value);
         //call schedule api too
-        this.setState(state=>{return{studio:studio[0]}},()=>this.weekFormat(moment(date).format('YYYY-MM-DD')));
+        this.setState(state => {
+            return {studio: studio[0]}
+        }, () => this.weekFormat(moment(date).format('YYYY-MM-DD')));
     }
 
     render() {
@@ -399,7 +368,7 @@ class Studios extends Component {
             <div className="container">
                 {isLoading && (
                     <CustomLoader isNoteOpen={true}/>
-                    )}
+                )}
 
                 <div className="booking-steps-wrapper">
                     <div className="container">
@@ -438,9 +407,9 @@ class Studios extends Component {
                     <Cart
                         header={cartHeader}
                         data={bookedSchedule}
-                        getDiscount={(length , studio_id) =>this.renderDiscount(length , studio_id)}
+                        getDiscount={(length, studio_id) => this.renderDiscount(length, studio_id)}
                         goToFinalStep={() => this.goToFinalStep()}
-                        removeTimeSlot={(date , studio_id) => this.removeBookingSchedule(date , studio_id)}
+                        removeTimeSlot={(date, studio_id) => this.removeBookingSchedule(date, studio_id)}
                     >
                     </Cart>
                 )}
@@ -449,10 +418,10 @@ class Studios extends Component {
                                   studios={studios}
                                   selectedStudio={studio}
                                   timeSchedule={timeSchedule}
-                                  onChangeStudio={(data)=>this.onChangeStudio(data)}
+                                  onChangeStudio={(data) => this.onChangeStudio(data)}
                                   changeDate={(date) => this.changeDate(date)}
                                   currentDate={moment(date).format('YYYY-MM-DD')}
-                                  removeBookingSchedule={(date ,studio_id) => this.removeBookingSchedule(date ,studio_id)}
+                                  removeBookingSchedule={(date, studio_id) => this.removeBookingSchedule(date, studio_id)}
                                   addSchedule={(date) => this.addSchedule(date)}></CalendarSlot>
                 )}
 
