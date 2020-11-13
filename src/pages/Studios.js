@@ -74,17 +74,20 @@ class Studios extends Component {
             date: moment(),
             studios: [],
             studio: {
-                "id": "2",
-                "name": "Brich",
+                "id": "1",
+                "name": "willow",
                 "status": "active",
                 "type": "studio",
                 "max_reservation": "1",
-                "tax": "12",
-                "price": "99",
-                "created_at": "2020-11-12 00:00:00"
+                "tax": "13",
+                "price": "95",
+                "created_at": "2020-11-11 06:00:00"
             },
             busySlots: [],
-            isLoading: false
+            isLoading: false,
+            holiday:[],
+            openClose:[],
+            locallyAddedSlots:[],
         }
     }
 
@@ -116,7 +119,7 @@ class Studios extends Component {
     }
 
     dataWithTime = async () => {
-        const {header ,studio} = this.state;
+        const {header ,studio ,locallyAddedSlots} = this.state;
         let dateWithTime = [];
         for (let i = 0; i < 12; i++) {
             const row = header.map((item, index) => ({
@@ -129,7 +132,10 @@ class Studios extends Component {
             }));
             dateWithTime.push(row);
         }
-        const slots = await getAllSchedule(studio.id);
+        let slots = await getAllSchedule(studio.id);
+        locallyAddedSlots.forEach(localSlots=>{
+            slots.push(localSlots);
+        })
         this.setState(state => {
             return {
                 timeSchedule: dateWithTime,
@@ -139,21 +145,45 @@ class Studios extends Component {
     }
 
     bookedSlotTimeMapping = async () => {
-        let {timeSchedule, busySlots} = this.state;
+        let {timeSchedule, busySlots ,locallyAddedSlots , studio} = this.state;
         let newColSchedule = [];
-        busySlots.forEach(slot => {
-            timeSchedule.forEach(schedule => {
-                const XY = schedule.map((item, i) => ({
-                    ...item,
-                    date: moment(item.dateWithTime).format('YYYY-MM-DD'),
-                    status: (isEqual(slot.slot, item.dateWithTime) && item.status !== 'booked') ? 'booked' : item.status
-                }));
-                // console.log(XY);
-                newColSchedule.push(XY);
+        if (locallyAddedSlots.length > 0){
+            locallyAddedSlots.forEach(localSlots=>{
+                busySlots.forEach(slot => {
+                    timeSchedule.forEach(schedule => {
+                        const XY = schedule.map((item, i) => ({
+                            ...item,
+                            date: moment(item.dateWithTime).format('YYYY-MM-DD'),
+                            status:(isEqual(item.studio_id , localSlots.studio_id) && isEqual(localSlots.slot, item.dateWithTime))? 'booking':
+                                   (isEqual(slot.slot, item.dateWithTime) &&
+                                       item.status !== 'booked' &&
+                                       item.status !== 'booking' &&
+                                       isEqual(slot.studio_id , studio.id) ) ? 'booked' :item.status
+                        }));
+                        // console.log(XY);
+                        newColSchedule.push(XY);
+                    });
+                    timeSchedule = newColSchedule;
+                    newColSchedule = [];
+                });
+            })
+        }else {
+            busySlots.forEach(slot => {
+                timeSchedule.forEach(schedule => {
+                    const XY = schedule.map((item, i) => ({
+                        ...item,
+                        date: moment(item.dateWithTime).format('YYYY-MM-DD'),
+                        status: (isEqual(slot.slot, item.dateWithTime) && item.status !== 'booked') ? 'booked' : item.status
+                    }));
+                    // console.log(XY);
+                    newColSchedule.push(XY);
+                });
+                timeSchedule = newColSchedule;
+                newColSchedule = [];
             });
-            timeSchedule = newColSchedule;
-            newColSchedule = [];
-        });
+        }
+
+
 
         // console.log(newColSchedule);
         console.log(timeSchedule);
@@ -166,9 +196,13 @@ class Studios extends Component {
 
     addSchedule = date => {
         this.setState({isLoading:true})
-        const {timeSchedule, studio} = this.state;
+        const {timeSchedule, studio ,locallyAddedSlots} = this.state;
         let dateWithTime = [];
+        let localSlots = [];
         let addSchedule = [];
+        //add to local which slot booked.
+        localSlots = locallyAddedSlots;
+        localSlots.push({studio_id:studio.id, slot:date.dateWithTime});
         //reserved slot from calendar
         for (let i = 0; i < 12; i++) {
             const row = timeSchedule[i].map((item, index) => ({
@@ -178,6 +212,7 @@ class Studios extends Component {
             }));
             dateWithTime.push(row);
         }
+
         dateWithTime.forEach(item => {
             const schedule = item.filter(item => item.status === 'booking').map((item, index) => ({
                 ...item,
@@ -221,7 +256,10 @@ class Studios extends Component {
             padding: '14px',
 
         });
-        this.setState({timeSchedule: dateWithTime, bookedSchedule: groupByDate , isLoading:false})
+        this.setState({timeSchedule: dateWithTime,
+                            bookedSchedule: groupByDate,
+                            locallyAddedSlots :localSlots,
+                            isLoading:false})
     }
 
     addDiscount = (dis) => {
@@ -241,9 +279,12 @@ class Studios extends Component {
 
     removeBookingSchedule = date => {
         this.setState({isLoading:true})
-        const {timeSchedule , studio} = this.state;
+        const {timeSchedule , locallyAddedSlots} = this.state;
         let dateWithTime = [];
         let addSchedule = []
+        let localSlots = [];
+        //add to local which slot booked.
+        localSlots = locallyAddedSlots.filter(slot => slot.date !== date.dateWithTime);
         for (let i = 0; i < 12; i++) {
             const row = timeSchedule[i].map((item, index) => ({
                 ...item,
@@ -275,7 +316,10 @@ class Studios extends Component {
             discount: this.addDiscount(value.length)
         })).value();
         console.log(groupByDate);
-        this.setState({timeSchedule: dateWithTime, bookedSchedule: groupByDate , isLoading:false});
+        this.setState({timeSchedule: dateWithTime,
+                            bookedSchedule: groupByDate ,
+                            locallyAddedSlots : localSlots,
+                            isLoading:false});
     }
 
     goToFinalStep = () => {
