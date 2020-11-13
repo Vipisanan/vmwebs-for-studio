@@ -4,8 +4,9 @@ import '../pages/style/calendar.css'
 
 const Cart = props => {
     const {header, data, removeTimeSlot, goToFinalStep} = props;
-    const getSubTotal = (item) => {
-        return item.data.length * item.data[0].price;
+    const getSubTotal = (length , tax) => {
+        //have to calculate with tax and discount
+        return length * tax;
     }
     const getDiscount = (item) => {
         return (item.data.length * item.data[0].price) * (item.discount / 100);
@@ -55,7 +56,7 @@ const Cart = props => {
                                    })
                                }
                                <tr>
-                                   <td>Discount</td>
+                                   <td>Discount %</td>
                                    <td></td>
                                    <td></td>
                                    <td></td>
@@ -63,11 +64,19 @@ const Cart = props => {
                                    <td>-</td>
                                </tr>
                                <tr>
+                                   <td>Tax %</td>
+                                   <td></td>
+                                   <td></td>
+                                   <td></td>
+                                   <td>{day.data[0].studio[0].tax}</td>
+                                   <td>-</td>
+                               </tr>
+                               <tr>
                                    <td>Total</td>
                                    <td></td>
                                    <td></td>
                                    <td></td>
-                                   <td>{}</td>
+                                   <td>{getSubTotal(day.data.length ,day.data[0].studio[0].tax )}</td>
                                    <td>-</td>
                                </tr>
                                </tbody>
