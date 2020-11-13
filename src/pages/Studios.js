@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './style/component.css'
 import CalendarSlot from "../components/CalendarSlot";
 import moment from 'moment';
-import {bookingSchedule, getAllSchedule, userRegister} from '../services/ScheduleService';
+import {bookingSchedule, getAllDiscounts, getAllSchedule, userRegister} from '../services/ScheduleService';
 import {chain, isEmpty, isEqual} from 'lodash';
 import Cart from "../components/Cart";
 import UserForm from "../components/UserForm";
@@ -88,6 +88,7 @@ class Studios extends Component {
             holiday:[],
             openClose:[],
             locallyAddedSlots:[],
+            allDiscounts:[]
         }
     }
 
@@ -99,8 +100,16 @@ class Studios extends Component {
         } catch (err) {
         }
         const roomsStudios = await getAllStudios(1);
+        const allDiscounts = await getAllDiscounts();
         this.weekFormat(moment(date).format('YYYY-MM-DD'));
-        this.setState({studios:roomsStudios })
+        this.setState(state =>{return {studios:roomsStudios ,allDiscounts:allDiscounts }})
+    }
+
+    renderDiscount =(length , studio_id)=>{
+        const {allDiscounts} =this.state;
+        const dis = allDiscounts.filter(item=> (item.studio_id === studio_id && item.no_of_slot === length.toString()));
+        console.log(length.toString() , studio_id ,dis)
+        if (isEmpty(dis[0])) return 1; else return dis[0].discount;
     }
 
     weekFormat = date => {
@@ -429,6 +438,7 @@ class Studios extends Component {
                     <Cart
                         header={cartHeader}
                         data={bookedSchedule}
+                        getDiscount={(length , studio_id) =>this.renderDiscount(length , studio_id)}
                         goToFinalStep={() => this.goToFinalStep()}
                         removeTimeSlot={(date , studio_id) => this.removeBookingSchedule(date , studio_id)}
                     >

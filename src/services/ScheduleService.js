@@ -17,6 +17,11 @@ export const bookingSchedule = async (data) => {
     return schedule;
 };
 
+export const getAllDiscounts = async () => {
+    let schedule = await API.get('http://localhost/wordpress/index.php/wp-json/std/discount');
+    return schedule.data;
+};
+
 
 // import axios from 'axios';
 //

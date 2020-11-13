@@ -93,7 +93,6 @@ const CalendarSlot = props => {
                     <tbody>
 
                     {timeSchedule.map((item, index) => {
-                        console.log(item);
                         return (<tr key={index}>
                             <td style={{minHeight: '10px!important', overflow: 'hidden'}}>
                                 <div className="row">
