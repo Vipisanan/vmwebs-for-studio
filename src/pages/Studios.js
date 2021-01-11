@@ -2,7 +2,14 @@ import React, {Component} from 'react';
 import './style/component.css'
 import CalendarSlot from "../components/CalendarSlot";
 import moment from 'moment';
-import {bookingSchedule, getAllDiscounts, getAllSchedule, userRegister} from '../services/ScheduleService';
+import {
+    bookingSchedule,
+    getAllDiscounts,
+    getAllSchedule,
+    removeReservedSlot,
+    reserveSlot,
+    userRegister
+} from '../services/ScheduleService';
 import {chain, isEmpty, isEqual} from 'lodash';
 import Cart from "../components/Cart";
 import UserForm from "../components/UserForm";
@@ -106,6 +113,11 @@ class Studios extends Component {
         })
     }
 
+    mapWithHolyDays=(date)=>{
+        // get all holiday from today
+        // const holiday = await getAllHoliDays()
+    }
+
     renderDiscount = (length, studio_id) => {
         const {allDiscounts} = this.state;
         const dis = allDiscounts.filter(item => (item.studio_id === studio_id && item.no_of_slot === length.toString()));
@@ -197,9 +209,35 @@ class Studios extends Component {
         });
     }
 
+    checkReservationSlot = async data => {
+        const {studio} = this.state;
+        const obj = {
+            studio_id:studio.id,
+            slot:data.dateWithTime
+        }
+        if (data.status === 'available'){
+            try{
+                await reserveSlot(obj);
+            }catch (e){
+                data.status = 'available';
+                // this.addSchedule(data);
+            }
+
+        }
+        if (data.status === "booking"){
+            try{
+                await removeReservedSlot(obj)
+            }catch (e){
+                data.status = 'booking';
+                // this.addSchedule(data);
+            }
+        }
+
+    }
 
     addSchedule = date => {
-        this.setState({isLoading: true})
+        this.setState({isLoading: true});
+        this.checkReservationSlot(date);
         const {timeSchedule, studio, studios, locallyAddedSlots} = this.state;
         let dateWithTime = [];
         let localSlots = [];
@@ -268,6 +306,7 @@ class Studios extends Component {
     removeBookingSchedule = (date, studio_id) => {
         this.setState({isLoading: true})
         const {timeSchedule, locallyAddedSlots, studios, studio} = this.state;
+        this.checkReservationSlot({studio_id:studio.id,dateWithTime:date , status : "booking"});
         let dateWithTime = [];
         let localSlots = [];
         //removed to local which slot booked.
