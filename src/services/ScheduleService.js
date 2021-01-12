@@ -1,7 +1,7 @@
 import API from '../utils/api';
 
-export const getAllSchedule = async (id) => {
-    let schedule = await API.get(`http://localhost/wordpress/index.php/wp-json/std/slots/${id}`);
+export const getAllSchedule = async (id ,data) => {
+    let schedule = await API.get(`http://localhost/wordpress/index.php/wp-json/std/slots/${id}` , {params:data});
 
     return schedule.data;
 };
@@ -42,24 +42,12 @@ export const removeReservedSlot = async (data) => {
     }
 };
 
-
-// import axios from 'axios';
-//
-// export function getSchedule() {
-//     return new Promise(((resolve, reject) => {
-//         axios({
-//             method: 'GET',
-//             url: `http://localhost/wordpress/index.php/wp-json/wl/v1/latest-posts/1`,
-//             data: null,
-//             timeout: 60000,
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'Accept': 'application/json'
-//             }
-//         }).then((res) => {
-//             resolve(res);
-//         }).catch((error) => {
-//             reject(error);
-//         });
-//     }));
-// }
+//get all holiday from date and studio
+export const getAllHoliDays = async (id , data) => {
+    try{
+        let schedule = await API.get('http://localhost/wordpress/index.php/wp-json/std/holiday/'+id , {params:data});
+        return schedule.data;
+    }catch (e) {
+        throw e;
+    }
+};

@@ -96,43 +96,63 @@ const CalendarSlot = props => {
                         return (<tr key={index}>
                             <td style={{minHeight: '10px!important', overflow: 'hidden'}}>
                                 <div className="row">
-                                    <p className="col-8 slot" style={{
-                                        fontWeight: (item[0].status === 'available') ? 'normal' : 'bold',
-                                        color: (item[0].status === 'available') ? 'black' : 'green',
-                                        cursor: (item[0].status !== 'booked') ? 'pointer' : '',
-                                        textDecorationLine: (item[0].status === 'booked') ? 'line-through' : 'none',
-                                    }}
-                                       onClick={() => {
-                                           addSchedule(item[0]) && addSchedule(item[0])
-                                       }}
-                                    >
-                                        {moment(item[0].dateWithTime).format('HH:mm:A')}
-                                    </p>
-                                    {(item[0].status === 'booking') && (
-                                        <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                           onClick={() => removeBookingSchedule(item[0].dateWithTime , item[0].studio_id)
-                                                            }>X</p>
+                                    {(item[0].status === 'holidays') && (
+                                        <div>
+                                          <p>Holiday</p>
+                                        </div>
                                     )}
+                                    {(item[0].status !== 'holidays') && (
+                                        <div>
+                                            <p className="col-8 slot" style={{
+                                                fontWeight: (item[0].status === 'available') ? 'normal' : 'bold',
+                                                color: (item[0].status === 'available') ? 'black' : 'green',
+                                                cursor: (item[0].status !== 'booked') ? 'pointer' : '',
+                                                textDecorationLine: (item[0].status === 'booked') ? 'line-through' : 'none',
+                                            }}
+                                               onClick={() => {
+                                                   addSchedule(item[0]) && addSchedule(item[0])
+                                               }}
+                                            >
+                                                {moment(item[0].dateWithTime).format('hh:mm:A')}
+                                            </p>
+                                            {(item[0].status === 'booking') && (
+                                                <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
+                                                   onClick={() => removeBookingSchedule(item[0].dateWithTime , item[0].studio_id)
+                                                   }>X</p>
+                                            )}
+                                        </div>
+                                    )}
+
                                 </div>
                             </td>
                             <td>
                                 <div className="row">
-                                    <p className="col-8 slot" style={{
-                                        fontWeight: (item[1].status === 'available') ? 'normal' : 'bold',
-                                        color: (item[1].status === 'available') ? 'black' : 'green',
-                                        cursor: (item[1].status !== 'booked') ? 'pointer' : '',
-                                        textDecorationLine: (item[1].status === 'booked') ? 'line-through' : 'none',
-                                    }}
-                                       onClick={() => {
-                                           addSchedule(item[1]) && addSchedule(item[1])
-                                       }}
-                                    >
-                                        {moment(item[1].dateWithTime).format('HH:mm:A')}
-                                    </p>
-                                    {(item[1].status === 'booking') && (
-                                        <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                           onClick={() => removeBookingSchedule(item[1].dateWithTime,item[1].studio_id) }>X</p>
+                                    {(item[1].status === 'holidays') && (
+                                        <div>
+                                            <p>Holiday</p>
+                                        </div>
                                     )}
+                                    {(item[1].status !== 'holidays') && (
+                                        <div>
+                                            <p className="col-8 slot" style={{
+                                                fontWeight: (item[1].status === 'available') ? 'normal' : 'bold',
+                                                color: (item[1].status === 'available') ? 'black' : 'green',
+                                                cursor: (item[1].status !== 'booked') ? 'pointer' : '',
+                                                textDecorationLine: (item[1].status === 'booked') ? 'line-through' : 'none',
+                                            }}
+                                               onClick={() => {
+                                                   addSchedule(item[1]) && addSchedule(item[1])
+                                               }}
+                                            >
+                                                {moment(item[1].dateWithTime).format('hh:mm:A')}
+                                            </p>
+                                            {(item[1].status === 'booking') && (
+                                                <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
+                                                   onClick={() => removeBookingSchedule(item[1].dateWithTime,item[1].studio_id) }>X</p>
+                                            )}
+                                        </div>
+                                    )}
+
                                 </div>
                             </td>
 
@@ -148,7 +168,7 @@ const CalendarSlot = props => {
                                            addSchedule(item[2]) && addSchedule(item[2])
                                        }}
                                     >
-                                        {moment(item[2].dateWithTime).format('HH:mm:A')}
+                                        {moment(item[2].dateWithTime).format('hh:mm:A')}
                                     </p>
                                     {(item[2].status === 'booking') && (
                                         <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
@@ -190,7 +210,7 @@ const CalendarSlot = props => {
                                            addSchedule(item[4]) && addSchedule(item[4])
                                        }}
                                     >
-                                        {moment(item[4].dateWithTime).format('HH:mm:A')}
+                                        {moment(item[4].dateWithTime).format('hh:mm:A')}
                                     </p>
                                     {(item[4].status === 'booking') && (
                                         <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
@@ -211,7 +231,7 @@ const CalendarSlot = props => {
                                            addSchedule(item[5]) && addSchedule(item[5])
                                        }}
                                     >
-                                        {moment(item[5].dateWithTime).format('HH:mm:A')}
+                                        {moment(item[5].dateWithTime).format('hh:mm:A')}
                                     </p>
                                     {(item[5].status === 'booking') && (
                                         <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
@@ -232,7 +252,7 @@ const CalendarSlot = props => {
                                            addSchedule(item[6]) && addSchedule(item[6])
                                        }}
                                     >
-                                        {moment(item[6].dateWithTime).format('HH:mm:A')}
+                                        {moment(item[6].dateWithTime).format('hh:mm:A')}
                                     </p>
                                     {(item[6].status === 'booking') && (
                                         <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}

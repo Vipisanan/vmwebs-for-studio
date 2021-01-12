@@ -4,7 +4,7 @@ import CalendarSlot from "../components/CalendarSlot";
 import moment from 'moment';
 import {
     bookingSchedule,
-    getAllDiscounts,
+    getAllDiscounts, getAllHoliDays,
     getAllSchedule,
     removeReservedSlot,
     reserveSlot,
@@ -79,43 +79,82 @@ class Studios extends Component {
             instaFeed: [],
             date: moment(),
             studios: [],
-            studio: {
-                "id": "1",
-                "name": "willow",
-                "status": "active",
-                "type": "studio",
-                "max_reservation": "1",
-                "tax": "13",
-                "price": "95",
-                "created_at": "2020-11-11 06:00:00"
-            },
+            studio: {},
             busySlots: [],
             isLoading: false,
             holiday: [],
             openClose: [],
             locallyAddedSlots: [],
-            allDiscounts: []
+            allDiscounts: [],
+            holiDays:[],
         }
     }
 
     componentDidMount = async () => {
         const {date, studio} = this.state;
-        this.setState({isLoading: true})
+        this.setState({isLoading: true});
+        const holiDays = await getAllHoliDays(1, {date:moment(date).format('YYYY-MM-DD')});
         try {
-
+            const roomsStudios = await getAllStudios(1);
+            const allDiscounts = await getAllDiscounts();
+            this.setState(state => {
+                return {studios: roomsStudios, allDiscounts: allDiscounts , studio:roomsStudios[0] , holiDays}
+            },()=>this.weekFormat(moment(date).format('YYYY-MM-DD')));
         } catch (err) {
+            alert('Something went wrong');
+            this.setState({isLoading: false})
         }
-        const roomsStudios = await getAllStudios(1);
-        const allDiscounts = await getAllDiscounts();
-        this.weekFormat(moment(date).format('YYYY-MM-DD'));
-        this.setState(state => {
-            return {studios: roomsStudios, allDiscounts: allDiscounts}
-        })
     }
 
-    mapWithHolyDays=(date)=>{
-        // get all holiday from today
-        // const holiday = await getAllHoliDays()
+    mapWithHolyDays =async ()=>{
+        const {holidays ,timeSchedule ,date} = this.state;
+        const holiDays = await getAllHoliDays(1, {date:moment(date).format('YYYY-MM-DD')});
+        let timeScheduleWithHolyDays=[];
+    //    there is 2 type of holiday
+    //        01.full day
+    //        02.open close
+        console.log(timeSchedule);
+                timeSchedule.forEach(item=>{
+                    const withHoliDay = item.map(row=>({
+                        ...row,
+                        status:holiDays.map(holiday =>{
+                            if(moment(row.dateWithTime ,'YYYY-MM-DD' ).isSame(moment(holiday.date , 'YYYY-MM-DD'))){
+                                const time = moment(moment(row.dateWithTime).format('HH:mm:ss' ) , 'HH:mm:ss' );
+                                const startTime=moment(holiday.close_from , 'HH:mm:ss');
+                                const endTime  =moment(holiday.close_to , 'HH:mm:ss');
+                                console.log(moment(time).format('HH:mm:ss') ,
+                                            moment(startTime).format('HH:mm:ss'),
+                                            moment(endTime).format('HH:mm:ss') ,
+                                    time.isBetween(startTime ,endTime ,undefined,'[)'));
+
+                                const status = isEqual(holiday.type , 'fullDay')?
+                                               'holidays'   :
+                                    time.isBetween(startTime ,endTime ,undefined,'[)')?
+                                                "holidays"  :row.status;
+                                return status;
+                            }else{
+                                return row.status;
+                            }
+                        })
+                    }));
+                    withHoliDay.forEach((i ,index)=>{
+                        const isHoliday=i.status.findIndex(sta=>sta === 'holidays');
+                        const isBooked=i.status.findIndex(sta=>sta === 'booked');
+                        if(isHoliday !== -1){
+                            withHoliDay[index].status='holidays';
+                        }else{
+                            if(isBooked !== -1){
+                                withHoliDay[index].status='booked';
+                            }
+                            withHoliDay[index].status='available';
+                        }
+                    })
+                    timeScheduleWithHolyDays.push(withHoliDay);
+                });
+                console.log(timeScheduleWithHolyDays);
+        await this.setState(state => {
+            return {timeSchedule: timeScheduleWithHolyDays, isLoading: false}
+        });
     }
 
     renderDiscount = (length, studio_id) => {
@@ -141,7 +180,7 @@ class Studios extends Component {
     }
 
     dataWithTime = async () => {
-        const {header, studio, locallyAddedSlots} = this.state;
+        const {header, studio, locallyAddedSlots , date} = this.state;
         let dateWithTime = [];
         for (let i = 0; i < 12; i++) {
             const row = header.map((item, index) => ({
@@ -154,14 +193,33 @@ class Studios extends Component {
             }));
             dateWithTime.push(row);
         }
-        let slots = await getAllSchedule(studio.id);
-        locallyAddedSlots.forEach(localSlots => {
-            slots.push(localSlots);
+        date.set({hour:0,minute:0,second:0,millisecond:0})
+        const data={
+            start_time: moment(date).format('YYYY-MM-DD HH:mm:ss'),
+            end_time: moment(date).add(7, 'day').format('YYYY-MM-DD HH:mm:ss'),
+        }
+        console.log(studio)
+        let slots = await getAllSchedule(studio.id , data);
+        const groupByDate = chain(slots).groupBy('slot').map((value ,key)=>({
+            data:value,
+            date:key
+        })).value();
+        let  filteredBusySlots =[]
+        console.log(groupByDate,slots ,studio);
+        groupByDate.forEach(byDate =>{
+            const bookedSlot = slots.filter(slot=>isEqual(byDate.date, slot.slot) && (byDate.data.length >= studio.max_reservation))
+            filteredBusySlots.push(bookedSlot[0]);
         })
+        console.log(filteredBusySlots);
+
+        locallyAddedSlots.forEach(localSlots => {
+            filteredBusySlots.push(localSlots);
+        })
+        console.log(filteredBusySlots);
         this.setState(state => {
             return {
                 timeSchedule: dateWithTime,
-                busySlots: slots
+                busySlots: filteredBusySlots.filter(item=>!isEmpty(item))
             }
         }, () => this.bookedSlotTimeMapping());
     }
@@ -206,7 +264,7 @@ class Studios extends Component {
 
         await this.setState(state => {
             return {timeSchedule: timeSchedule, isLoading: false}
-        });
+        },()=>this.mapWithHolyDays());
     }
 
     checkReservationSlot = async data => {
