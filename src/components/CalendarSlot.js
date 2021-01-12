@@ -6,6 +6,8 @@ import DatePicker from "../core/CalendarCompo";
 import {isEmpty, isEqual} from "lodash";
 import rightArrow from "../assets/icons/angle-right-solid.svg";
 import leftArrow from "../assets/icons/angle-left-solid.svg"
+import CustomChips from "../core/Chip";
+import '../theme/table.css';
 
 const CalendarSlot = props => {
     const {header, timeSchedule, addSchedule, removeBookingSchedule, currentDate ,studios,selectedStudio ,onChangeStudio} = props;
@@ -76,7 +78,7 @@ const CalendarSlot = props => {
 
             <br/>
             <div className="table-responsive-xl">
-                <table className="table table-sm">
+                <table className="table table-sm table-borderless">
                     <thead>
                     <tr>
                         {header.map((item, index) => {
@@ -94,172 +96,18 @@ const CalendarSlot = props => {
 
                     {timeSchedule.map((item, index) => {
                         return (<tr key={index}>
-                            <td style={{minHeight: '10px!important', overflow: 'hidden'}}>
-                                <div className="row">
-                                    {(item[0].status === 'holidays') && (
-                                        <div>
-                                          <p>Holiday</p>
-                                        </div>
-                                    )}
-                                    {(item[0].status !== 'holidays') && (
-                                        <div>
-                                            <p className="col-8 slot" style={{
-                                                fontWeight: (item[0].status === 'available') ? 'normal' : 'bold',
-                                                color: (item[0].status === 'available') ? 'black' : 'green',
-                                                cursor: (item[0].status !== 'booked') ? 'pointer' : '',
-                                                textDecorationLine: (item[0].status === 'booked') ? 'line-through' : 'none',
-                                            }}
-                                               onClick={() => {
-                                                   addSchedule(item[0]) && addSchedule(item[0])
-                                               }}
-                                            >
-                                                {moment(item[0].dateWithTime).format('hh:mm:A')}
-                                            </p>
-                                            {(item[0].status === 'booking') && (
-                                                <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                                   onClick={() => removeBookingSchedule(item[0].dateWithTime , item[0].studio_id)
-                                                   }>X</p>
-                                            )}
-                                        </div>
-                                    )}
+                            {item.map((data, i) =>{
+                               return (<td key={i} style={{textAlign:'-moz-center'}}>
+                                   <CustomChips
+                                       item={data}
+                                       status={data.status}
+                                       dateWithTime={data.dateWithTime}
+                                       onClickChip={value=>addSchedule(value)}
+                                       onCloseChips={value=>removeBookingSchedule(value.dateWithTime , value.studio_id)}
+                                   />
+                               </td>)
+                            })}
 
-                                </div>
-                            </td>
-                            <td>
-                                <div className="row">
-                                    {(item[1].status === 'holidays') && (
-                                        <div>
-                                            <p>Holiday</p>
-                                        </div>
-                                    )}
-                                    {(item[1].status !== 'holidays') && (
-                                        <div>
-                                            <p className="col-8 slot" style={{
-                                                fontWeight: (item[1].status === 'available') ? 'normal' : 'bold',
-                                                color: (item[1].status === 'available') ? 'black' : 'green',
-                                                cursor: (item[1].status !== 'booked') ? 'pointer' : '',
-                                                textDecorationLine: (item[1].status === 'booked') ? 'line-through' : 'none',
-                                            }}
-                                               onClick={() => {
-                                                   addSchedule(item[1]) && addSchedule(item[1])
-                                               }}
-                                            >
-                                                {moment(item[1].dateWithTime).format('hh:mm:A')}
-                                            </p>
-                                            {(item[1].status === 'booking') && (
-                                                <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                                   onClick={() => removeBookingSchedule(item[1].dateWithTime,item[1].studio_id) }>X</p>
-                                            )}
-                                        </div>
-                                    )}
-
-                                </div>
-                            </td>
-
-                            <td>
-                                <div className="row">
-                                    <p className="col-8 slot" style={{
-                                        fontWeight: (item[2].status === 'available') ? 'normal' : 'bold',
-                                        color: (item[2].status === 'available') ? 'black' : 'green',
-                                        cursor: (item[2].status !== 'booked') ? 'pointer' : '',
-                                        textDecorationLine: (item[2].status === 'booked') ? 'line-through' : 'none',
-                                    }}
-                                       onClick={() => {
-                                           addSchedule(item[2]) && addSchedule(item[2])
-                                       }}
-                                    >
-                                        {moment(item[2].dateWithTime).format('hh:mm:A')}
-                                    </p>
-                                    {(item[2].status === 'booking') && (
-                                        <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                           onClick={() => removeBookingSchedule(item[2].dateWithTime , item[2].studio_id)}>X</p>
-                                    )}
-                                </div>
-                            </td>
-
-                            <td>
-                                <div className="row">
-                                    <p className="col-8 slot" style={{
-                                        fontWeight: (item[3].status === 'available') ? 'normal' : 'bold',
-                                        color: (item[3].status === 'available') ? 'black' : 'green',
-                                        cursor: (item[3].status !== 'booked') ? 'pointer' : '',
-                                        textDecorationLine: (item[3].status === 'booked') ? 'line-through' : 'none',
-                                    }}
-                                       onClick={() => {
-                                           addSchedule(item[3]) && addSchedule(item[3])
-                                       }}
-                                    >
-                                        {moment(item[3].dateWithTime).format('HH:mm:A')}
-                                    </p>
-                                    {(item[3].status === 'booking') && (
-                                        <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                           onClick={() => removeBookingSchedule(item[3].dateWithTime , item[3].studio_id) }>X</p>
-                                    )}
-                                </div>
-                            </td>
-
-                            <td>
-                                <div className="row">
-                                    <p className="col-8 slot" style={{
-                                        fontWeight: (item[4].status === 'available') ? 'normal' : 'bold',
-                                        color: (item[4].status === 'available') ? 'black' : 'green',
-                                        cursor: (item[4].status !== 'booked') ? 'pointer' : '',
-                                        textDecorationLine: (item[4].status === 'booked') ? 'line-through' : 'none',
-                                    }}
-                                       onClick={() => {
-                                           addSchedule(item[4]) && addSchedule(item[4])
-                                       }}
-                                    >
-                                        {moment(item[4].dateWithTime).format('hh:mm:A')}
-                                    </p>
-                                    {(item[4].status === 'booking') && (
-                                        <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                           onClick={() => removeBookingSchedule(item[4].dateWithTime , item[4].studio_id)}>X</p>
-                                    )}
-                                </div>
-                            </td>
-
-                            <td>
-                                <div className="row">
-                                    <p className="col-8 slot" style={{
-                                        fontWeight: (item[5].status === 'available') ? 'normal' : 'bold',
-                                        color: (item[5].status === 'available') ? 'black' : 'green',
-                                        cursor: (item[5].status !== 'booked') ? 'pointer' : '',
-                                        textDecorationLine: (item[5].status === 'booked') ? 'line-through' : 'none',
-                                    }}
-                                       onClick={() => {
-                                           addSchedule(item[5]) && addSchedule(item[5])
-                                       }}
-                                    >
-                                        {moment(item[5].dateWithTime).format('hh:mm:A')}
-                                    </p>
-                                    {(item[5].status === 'booking') && (
-                                        <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                           onClick={() => removeBookingSchedule(item[5].dateWithTime , item[5].studio_id)}>X</p>
-                                    )}
-                                </div>
-                            </td>
-
-                            <td>
-                                <div className="row">
-                                    <p className="col-8 slot" style={{
-                                        fontWeight: (item[6].status === 'available') ? 'normal' : 'bold',
-                                        color: (item[6].status === 'available') ? 'black' : 'green',
-                                        cursor: (item[6].status !== 'booked') ? 'pointer' : '',
-                                        textDecorationLine: (item[6].status === 'booked') ? 'line-through' : 'none',
-                                    }}
-                                       onClick={() => {
-                                           addSchedule(item[6]) && addSchedule(item[6])
-                                       }}
-                                    >
-                                        {moment(item[6].dateWithTime).format('hh:mm:A')}
-                                    </p>
-                                    {(item[6].status === 'booking') && (
-                                        <p className="col-4" style={{color: 'red', fontWeight: 'bold', cursor: 'pointer'}}
-                                           onClick={() => removeBookingSchedule(item[6].dateWithTime , item[6].studio_id)}>X</p>
-                                    )}
-                                </div>
-                            </td>
 
                         </tr>);
                     })}
