@@ -1,6 +1,7 @@
 import Home from "../pages/Home";
 import About from "../pages/About";
 import Studios from "../pages/Studios";
+import Login from "../pages/Login";
 
 const publicRoute = [
     {
@@ -16,6 +17,11 @@ const publicRoute = [
     {
         path: '/studios',
         component: Studios,
+        exact: true,
+    },
+    {
+        path: '/login',
+        component: Login,
         exact: true,
     },
 ]
