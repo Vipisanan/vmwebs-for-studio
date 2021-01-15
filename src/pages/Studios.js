@@ -88,11 +88,14 @@ class Studios extends Component {
             allDiscounts: [],
             holiDays:[],
         }
+        // Activate the event listener
+        this.setupBeforeUnloadListener();
     }
 
     componentDidMount = async () => {
         const {date, studio} = this.state;
         this.setState({isLoading: true});
+
         const holiDays = await getAllHoliDays(1, {date:moment(date).format('YYYY-MM-DD')});
         try {
             const roomsStudios = await getAllStudios(1);
@@ -436,6 +439,22 @@ class Studios extends Component {
             return {studio: studio[0]}
         }, () => this.weekFormat(moment(date).format('YYYY-MM-DD')));
     }
+    componentWillUnmount() {
+        alert("componentWillUnmount");
+    }
+    // Things to do before unloading/closing the tab
+    doSomethingBeforeUnload = () => {
+        // Do something
+        alert("doSomethingBeforeUnload");
+    }
+
+    // Setup the `beforeunload` event listener
+    setupBeforeUnloadListener = () => {
+        window.addEventListener("beforeunload", (ev) => {
+            ev.preventDefault();
+            return this.doSomethingBeforeUnload();
+        });
+    };
 
     render() {
         const {

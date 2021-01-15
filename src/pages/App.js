@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import {Scrollbars} from 'react-custom-scrollbars';
-import publicRoute from "../rotues/publicRoute";
+import publicRoute from "../routes/publicRoute";
 import NavBar from "./core/NavBar";
 import Footer from "./core/Footer";
 import 'bootstrap/dist/css/bootstrap.min.css';
