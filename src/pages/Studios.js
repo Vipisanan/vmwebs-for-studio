@@ -327,9 +327,9 @@ class Studios extends Component {
 
         Swal.fire({
             toast: true,
-            position: 'top',
+            position: 'top-right',
             icon: 'success',
-            title: `Added ${moment(date.dateWithTime).format('YYYY-MM-DD HH:mm:A')} slot to cart.`,
+            title: `Slot added to cart.`,
             showClass: {
                 popup: 'animate__animated animate__fadeInDown',
                 // icon: '',
@@ -393,7 +393,27 @@ class Studios extends Component {
                 data: value
             })).value();
             groupByDate.push(dateGroup);
-        })
+        });
+        Swal.fire({
+            toast: true,
+            position: 'top-right',
+            icon: 'success',
+            title: `Slot removed from cart.`,
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown',
+                // icon: '',
+
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp',
+            },
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            width: 'auto',
+            padding: '14px',
+
+        });
         this.setState({
             timeSchedule: dateWithTime,
             bookedSchedule: groupByDate,
