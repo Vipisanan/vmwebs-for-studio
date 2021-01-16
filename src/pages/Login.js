@@ -18,6 +18,8 @@ class Login extends Component{
         try{
             const response = await loginUser(user);
             localStorage.setItem( 'token', response.token);
+            this.props.history.push('/');
+
         }catch(err) {
             alert("Something went wrong. Please try again")
         }
