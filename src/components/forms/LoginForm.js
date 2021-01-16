@@ -30,11 +30,11 @@ const LoginForm =(props)=>{
                     <form onSubmit={formik.handleSubmit}>
                         <div className="form-group">
                             <label htmlFor="exampleInputEmail1">Email address</label>
-                            <input type="email"
+                            <input type="text"
                                    className="form-control form-control-sm"
                                    aria-describedby="emailHelp"
-                                   id={'email'}
-                                   name={'email'}
+                                   id={'username'}
+                                   name={'username'}
                                    value={formik.values.name}
                                    onChange={event=>getInputValue(event)}
                             />
