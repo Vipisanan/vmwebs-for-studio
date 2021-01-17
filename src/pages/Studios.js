@@ -428,8 +428,10 @@ class Studios extends Component {
 
     submitForm = async data => {
         const {bookedSchedule} = this.state;
+        console.log(bookedSchedule);
+        // return ;
         let schedule = [];
-        bookedSchedule.forEach((scheduleData, i) => {
+        bookedSchedule[0].forEach((scheduleData, i) => {
             scheduleData.data.forEach(item => {
                 schedule.push(item.dateWithTime);
             });
